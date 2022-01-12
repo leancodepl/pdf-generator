@@ -13,7 +13,8 @@ export type FontConfiguration = {
 export type FontsConfiguration = Record<symbol | string, FontConfiguration>;
 
 const readFont = (fontFile: string | Buffer) => {
-    fs.readFileSync(fontFile).toString("base64");
+    const buffer = typeof fontFile === "string" ? fs.readFileSync(fontFile) : fontFile;
+    return buffer.toString("base64");
 };
 
 export class FontLibrary {
@@ -27,8 +28,8 @@ export class FontLibrary {
             @font-face {
                 font-family: "${config.fontFamily}";
                 src: url(data:application/x-font-woff;charset=utf-8;base64,${readFont(config.fontFile)});
-                font-style: ${config.fontStyle ?? "normal"};
-                font-weight: ${config.fontWeight ?? 400};
+                ${config.fontStyle && `font-style: ${config.fontStyle}`};
+                ${config.fontWeight && `font-weight: ${config.fontWeight}`};
             }`,
             }),
             {} as Record<symbol | string, string>,
