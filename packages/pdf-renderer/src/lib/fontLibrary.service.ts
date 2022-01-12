@@ -28,8 +28,8 @@ export class FontLibrary {
             @font-face {
                 font-family: "${config.fontFamily}";
                 src: url(data:application/x-font-woff;charset=utf-8;base64,${readFont(config.fontFile)});
-                ${config.fontStyle && `font-style: ${config.fontStyle}`};
-                ${config.fontWeight && `font-weight: ${config.fontWeight}`};
+                ${config.fontStyle ? `font-style: ${config.fontStyle}` : ""};
+                ${config.fontWeight ? `font-weight: ${config.fontWeight}` : ""};
             }`,
             }),
             {} as Record<symbol | string, string>,
