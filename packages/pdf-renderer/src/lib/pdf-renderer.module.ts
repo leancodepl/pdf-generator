@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
 @Module({
-  controllers: [],
-  providers: [],
-  exports: [],
+    controllers: [],
+    providers: [],
+    exports: [],
 })
-export class PdfRendererModule {}
+export default class PdfRendererModule {}

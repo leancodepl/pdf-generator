@@ -1,1 +1,1 @@
-export * from './lib/pdf-renderer.module';
+export * from "./lib/pdf-renderer.module";
