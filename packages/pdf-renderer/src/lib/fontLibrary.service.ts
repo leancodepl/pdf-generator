@@ -3,7 +3,7 @@ import * as fs from "fs";
 
 export const FontsConfigurationToken = Symbol("FontsConfiguration");
 
-type FontConfiguration = {
+export type FontConfiguration = {
     fontFamily: string;
     fontFile: string | Buffer;
     fontStyle?: string;
@@ -12,24 +12,26 @@ type FontConfiguration = {
 
 export type FontsConfiguration = Record<symbol | string, FontConfiguration>;
 
+const readFont = (fontFile: string | Buffer) => {
+    fs.readFileSync(fontFile).toString("base64");
+};
+
 export class FontLibrary {
-    private fonts: Record<symbol | string, string>;
+    private fonts;
 
     constructor(@Inject(FontsConfigurationToken) private fontsConfiguration: FontsConfiguration) {
         this.fonts = Object.entries(this.fontsConfiguration).reduce(
-            (acc, curr) => ({
+            (acc, [font, config]) => ({
                 ...acc,
-                [curr[0]]: `
+                [font]: `
             @font-face {
-                font-family: "${curr[1].fontFamily}";
-                src: url(data:application/x-font-woff;charset=utf-8;base64,${fs
-                    .readFileSync(curr[1].fontFile)
-                    .toString("base64")});
-                font-style: ${curr[1].fontStyle};
-                font-weight: ${curr[1].fontWeight};
+                font-family: "${config.fontFamily}";
+                src: url(data:application/x-font-woff;charset=utf-8;base64,${readFont(config.fontFile)});
+                font-style: ${config.fontStyle ?? "normal"};
+                font-weight: ${config.fontWeight ?? 400};
             }`,
             }),
-            {},
+            {} as Record<symbol | string, string>,
         );
     }
 

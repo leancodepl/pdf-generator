@@ -1,15 +1,15 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import BrowserPool from "./browserPool.service";
-import { FontsConfiguration, FontsConfigurationToken } from "./FontLibrary";
-import PdfGenerator from "./pdfGenerator.service";
-import PdfRenderer from "./pdfRenderer.service";
-import ReactRenderer from "./reactRenderer.service";
+import { BrowserPool } from "./browserPool.service";
+import { FontLibrary, FontsConfiguration, FontsConfigurationToken } from "./fontLibrary.service";
+import { PdfGenerator } from "./pdfGenerator.service";
+import { PdfRenderer } from "./pdfRenderer.service";
+import { ReactRenderer } from "./reactRenderer.service";
 
 @Module({
-    providers: [BrowserPool, PdfGenerator, ReactRenderer, PdfRenderer],
+    providers: [BrowserPool, PdfGenerator, ReactRenderer, PdfRenderer, FontLibrary],
     exports: [PdfRenderer],
 })
-export default class PdfRendererModule {
+export class PdfRendererModule {
     static forRoot({ fontsConfiguration }: { fontsConfiguration: FontsConfiguration }): DynamicModule {
         return {
             module: PdfRendererModule,

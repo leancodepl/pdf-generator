@@ -2,13 +2,13 @@ import { ReactElement } from "react";
 import { Inject, Injectable } from "@nestjs/common";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ServerStyleSheet } from "styled-components";
-import { FontLibrary } from "./FontLibrary";
+import { FontLibrary } from "./fontLibrary.service";
 
 @Injectable()
-export default class ReactRenderer {
+export class ReactRenderer {
     constructor(@Inject() private fontLibrary: FontLibrary) {}
 
-    generate(element: ReactElement, fonts: (symbol | string)[]) {
+    generate(element: ReactElement, fonts: (symbol | string)[] = []) {
         const sheet = new ServerStyleSheet();
         const html = renderToStaticMarkup(sheet.collectStyles(element));
 
