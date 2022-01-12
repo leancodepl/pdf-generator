@@ -1,1 +1,2 @@
-export * from "./lib/pdf-renderer.module";
+export * from "./lib/pdfRenderer.module";
+export { FontConfiguration, FontsConfiguration } from "./lib/fontLibrary.service";
