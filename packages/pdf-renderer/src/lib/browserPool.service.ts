@@ -4,7 +4,7 @@ import { Cluster } from "puppeteer-cluster";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 
 @Injectable()
-export class BrowserPool implements OnModuleInit, OnModuleDestroy {
+export default class BrowserPool implements OnModuleInit, OnModuleDestroy {
     private cluster?: Cluster<any, any>;
 
     async onModuleInit() {

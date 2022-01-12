@@ -1,12 +1,14 @@
 import { ReactElement } from "react";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ServerStyleSheet } from "styled-components";
-import openSans from "./fonts/OpenSans";
+import { FontLibrary } from "./FontLibrary";
 
 @Injectable()
-export class ReactRenderer {
-    generate(element: ReactElement) {
+export default class ReactRenderer {
+    constructor(@Inject() private fontLibrary: FontLibrary) {}
+
+    generate(element: ReactElement, fonts: (symbol | string)[]) {
         const sheet = new ServerStyleSheet();
         const html = renderToStaticMarkup(sheet.collectStyles(element));
 
@@ -18,7 +20,7 @@ export class ReactRenderer {
             <html>
                 <head>
                     <style>
-                        ${openSans}
+                        ${fonts.map(this.fontLibrary.getFont).join("\n")}
                     </style>
                     ${styleTags}
                 </head>

@@ -8,8 +8,8 @@ import { ReactRenderer } from "./reactRenderer.service";
 export class PdfRenderer {
     constructor(private pdfGenerator: PdfGenerator, private reactRenderer: ReactRenderer) {}
 
-    async generatePdf(element: ReactElement) {
-        const html = this.reactRenderer.generate(element);
+    async generatePdf(element: ReactElement, fonts: (symbol | string)[]) {
+        const html = this.reactRenderer.generate(element, fonts);
 
         const pdfBuffer = await this.pdfGenerator.generate(html);
 
