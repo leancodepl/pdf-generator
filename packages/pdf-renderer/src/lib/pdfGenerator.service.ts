@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
-import { BrowserPool } from "./browserPool.service";
+import BrowserPool from "./browserPool.service";
 
 @Injectable()
-export class PdfGenerator {
+export default class PdfGenerator {
     constructor(private browserPool: BrowserPool) {}
 
     private static generatePdfTask: TaskFunction<{ html: string }, Buffer> = async ({ page, data: { html } }) => {

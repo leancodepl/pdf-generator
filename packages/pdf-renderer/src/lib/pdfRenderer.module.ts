@@ -1,8 +1,8 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import BrowserPool from "./browserPool.service";
 import { FontsConfiguration, FontsConfigurationToken } from "./FontLibrary";
-import { PdfRenderer } from "./pdf-renderer.service";
-import { PdfGenerator } from "./pdfGenerator.service";
+import PdfGenerator from "./pdfGenerator.service";
+import PdfRenderer from "./pdfRenderer.service";
 import ReactRenderer from "./reactRenderer.service";
 
 @Module({

@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
 import { ReactElement } from "react";
+import { Injectable } from "@nestjs/common";
 import { Readable } from "stream";
-import { PdfGenerator } from "./pdfGenerator.service";
-import { ReactRenderer } from "./reactRenderer.service";
+import PdfGenerator from "./pdfGenerator.service";
+import ReactRenderer from "./reactRenderer.service";
 
 @Injectable()
-export class PdfRenderer {
+export default class PdfRenderer {
     constructor(private pdfGenerator: PdfGenerator, private reactRenderer: ReactRenderer) {}
 
     async generatePdf(element: ReactElement, fonts: (symbol | string)[]) {
