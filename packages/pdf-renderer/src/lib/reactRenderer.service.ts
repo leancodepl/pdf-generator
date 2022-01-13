@@ -6,7 +6,7 @@ import { FontLibrary } from "./fontLibrary.service";
 
 @Injectable()
 export class ReactRenderer {
-    constructor(private fontLibrary: FontLibrary) {}
+    constructor(private readonly fontLibrary: FontLibrary) {}
 
     generate(element: ReactElement, fonts: (symbol | string)[] = []) {
         const sheet = new ServerStyleSheet();

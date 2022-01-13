@@ -21,7 +21,7 @@ const readFont = (fontFile: string | Buffer) => {
 export class FontLibrary {
     private fonts;
 
-    constructor(@Inject(FontsConfigurationToken) private fontsConfiguration: FontsConfiguration) {
+    constructor(@Inject(FontsConfigurationToken) private readonly fontsConfiguration: FontsConfiguration) {
         this.fonts = [
             ...Object.getOwnPropertySymbols(this.fontsConfiguration),
             ...Object.getOwnPropertyNames(this.fontsConfiguration),
