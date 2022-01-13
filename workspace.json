@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
-    "pdf-renderer": "packages/pdf-renderer"
+    "pdf-renderer": "packages/pdf-renderer",
+    "sample-project": "packages/sample-project"
   }
 }
