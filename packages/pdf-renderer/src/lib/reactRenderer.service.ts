@@ -1,12 +1,12 @@
 import { ReactElement } from "react";
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ServerStyleSheet } from "styled-components";
 import { FontLibrary } from "./fontLibrary.service";
 
 @Injectable()
 export class ReactRenderer {
-    constructor(@Inject() private fontLibrary: FontLibrary) {}
+    constructor(private fontLibrary: FontLibrary) {}
 
     generate(element: ReactElement, fonts: (symbol | string)[] = []) {
         const sheet = new ServerStyleSheet();
@@ -20,7 +20,7 @@ export class ReactRenderer {
             <html>
                 <head>
                     <style>
-                        ${fonts.map(this.fontLibrary.getFont).join("\n")}
+                        ${fonts.map(font => this.fontLibrary.getFont(font)).join("\n")}
                     </style>
                     ${styleTags}
                 </head>

@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import * as fs from "fs";
 
 export const FontsConfigurationToken = Symbol("FontsConfiguration");
@@ -17,23 +17,28 @@ const readFont = (fontFile: string | Buffer) => {
     return buffer.toString("base64");
 };
 
+@Injectable()
 export class FontLibrary {
     private fonts;
 
     constructor(@Inject(FontsConfigurationToken) private fontsConfiguration: FontsConfiguration) {
-        this.fonts = Object.entries(this.fontsConfiguration).reduce(
-            (acc, [font, config]) => ({
+        this.fonts = [
+            ...Object.getOwnPropertySymbols(this.fontsConfiguration),
+            ...Object.getOwnPropertyNames(this.fontsConfiguration),
+        ].reduce((acc, font) => {
+            const { fontFamily, fontFile, fontStyle, fontWeight } = fontsConfiguration[font];
+
+            return {
                 ...acc,
                 [font]: `
             @font-face {
-                font-family: "${config.fontFamily}";
-                src: url(data:application/x-font-woff;charset=utf-8;base64,${readFont(config.fontFile)});
-                ${config.fontStyle ? `font-style: ${config.fontStyle}` : ""};
-                ${config.fontWeight ? `font-weight: ${config.fontWeight}` : ""};
+                font-family: "${fontFamily}";
+                src: url(data:application/x-font-woff;charset=utf-8;base64,${readFont(fontFile)});
+                ${fontStyle ? `font-style: ${fontStyle}` : ""};
+                ${fontWeight ? `font-weight: ${fontWeight}` : ""};
             }`,
-            }),
-            {} as Record<symbol | string, string>,
-        );
+            };
+        }, {} as Record<symbol | string, string>);
     }
 
     getFont(font: symbol | string): string {
