@@ -1,41 +1,40 @@
-name: CI
+name: pull request
 
 on:
-    pull_request:
+  pull_request:
 
 jobs:
-    pr:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
-                  fetch-depth: 0
-            - name: Derive appropriate SHAs for base and head for `nx affected` commands
-              uses: nrwl/nx-set-shas@v2
-            - uses: actions/setup-node@v1
-              with:
-                  node-version: "17"
-            - run: npm ci
-            - run: npx nx affected --target=build --parallel --max-parallel=3
-            - run: npx nx affected --target=test --parallel --max-parallel=2 --ci
-            - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@v2
-              if: always()
+  pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "17"
+      - run: npm ci
+      - run: npx nx affected --target=build --parallel --max-parallel=3
+      - run: npx nx affected --target=test --parallel --max-parallel=2 --ci
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        if: always()
 
-            - name: Publish Unit Test Results
-              uses: EnricoMi/publish-unit-test-result-action@v1.6
-              if: >
-                always() &&
-                github.event.sender.login != 'dependabot[bot]' &&
-                ( github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository )
-              with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
-                files: test-results/**/*.xml
-            - name: Upload Test Results
-              if: always()
-              uses: actions/upload-artifact@v2
-              with:
-                name: Unit Test Results
-                path: test-results/**/*.xml
-
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        if: >
+          always() &&
+          github.event.sender.login != 'dependabot[bot]' &&
+          ( github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository )
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: test-results/**/*.xml
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unit Test Results
+          path: test-results/**/*.xml
