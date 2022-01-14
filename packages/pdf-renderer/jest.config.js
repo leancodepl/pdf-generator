@@ -12,4 +12,7 @@ module.exports = {
     },
     moduleFileExtensions: ["ts", "js", "html"],
     coverageDirectory: "../../coverage/packages/pdf-renderer",
+    collectCoverage: true,
+    coverageReporters: ["json", "lcov"],
+    reporters: ["default", ["jest-junit", { outputName: "test-results/packages/pdf-renderer/report.xml" }]],
 };
