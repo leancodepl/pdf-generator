@@ -1,8 +1,8 @@
 import { FontsConfiguration } from "@pdf-generator/pdf-renderer";
 import path = require("path");
 
-const OpenSansRegular = Symbol("OpenSansRegular");
-const OpenSansBold = Symbol("OpenSansBold");
+export const OpenSansRegular = Symbol("OpenSansRegular");
+export const OpenSansBold = Symbol("OpenSansBold");
 
 const fontsPath = path.join(__dirname, "assets", "fonts", "OpenSans");
 
