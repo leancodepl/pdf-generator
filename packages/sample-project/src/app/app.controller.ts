@@ -12,7 +12,7 @@ export class AppController {
 
     @Get("pdf")
     async samplePdf(@Res() res: Response) {
-        const { stream } = await this.pdfRenderer.generatePdf(this.sampleComponentService.getComponent(), []);
+        const stream = await this.pdfRenderer.generatePdf(this.sampleComponentService.getComponent(), []).asStream();
 
         const filename = "test.pdf";
 
