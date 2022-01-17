@@ -8,19 +8,24 @@ import { ReactRenderer } from "./reactRenderer.service";
 export class PdfRenderer {
     constructor(private pdfGenerator: PdfGenerator, private reactRenderer: ReactRenderer) {}
 
-    async generatePdf(element: ReactElement, fonts: (symbol | string)[] = []) {
+    generatePdf(element: ReactElement, fonts: (symbol | string)[] = []) {
         const html = this.reactRenderer.generate(element, fonts);
 
-        const pdfBuffer = await this.pdfGenerator.generate(html);
+        const mkBuffer = async () => await this.pdfGenerator.generate(html);
 
         return {
-            stream: new Readable({
-                read() {
-                    this.push(pdfBuffer);
-                    this.push(null);
-                },
-            }),
-            html,
+            asHtml: () => html,
+            asBuffer: async () => await mkBuffer(),
+            asStream: async () => {
+                const buffer = await mkBuffer();
+
+                return new Readable({
+                    read() {
+                        this.push(buffer);
+                        this.push(null);
+                    },
+                });
+            },
         };
     }
 }
