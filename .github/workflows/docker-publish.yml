@@ -1,0 +1,41 @@
+name: publish docker image
+
+on:
+  push:
+    tags:
+      - "docker-*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/leancodepl/pdf-generator
+          tags: |
+            type=match,pattern=docker-(.*),group=1
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: |
+            NODE_VERSION=17
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
