@@ -2,6 +2,19 @@
   "version": 2,
   "projects": {
     "pdf-renderer": "packages/pdf-renderer",
-    "sample-project": "packages/sample-project"
+    "sample-project": "packages/sample-project",
+    "workspace": {
+      "root": ".",
+      "targets": {
+        "version": {
+          "executor": "@jscutlery/semver:version",
+          "options": {
+            "syncVersions": true,
+            "skipRootChangelog": true,
+            "skipProjectChangelog": true
+          }
+        }
+      }
+    }
   }
 }

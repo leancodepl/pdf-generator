@@ -5,20 +5,14 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/pdf-renderer/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/pdf-renderer/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/pdf-renderer"
-      ],
+      "outputs": ["coverage/packages/pdf-renderer"],
       "options": {
         "jestConfig": "packages/pdf-renderer/jest.config.js",
         "passWithNoTests": true
@@ -26,17 +20,19 @@
     },
     "build": {
       "executor": "@nrwl/node:package",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/pdf-renderer",
         "tsConfig": "packages/pdf-renderer/tsconfig.lib.json",
         "packageJson": "packages/pdf-renderer/package.json",
         "main": "packages/pdf-renderer/src/index.ts",
-        "assets": [
-          "packages/pdf-renderer/*.md"
-        ]
+        "assets": ["packages/pdf-renderer/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "npm publish dist/packages/pdf-renderer --access public"
       }
     }
   },
