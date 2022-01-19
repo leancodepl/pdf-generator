@@ -17,8 +17,9 @@ the dependencies needed by Puppeteer.
 If you want to provide custom fonts, you need those in the `.woff` format, which is the only one supported at the
 moment.
 
-Keep in mind, that everything you pass into the renderer, has to be synchronous, for it to work as expected. Any data
-component needs, should be provided beforehand. Also, calling some hooks inside a component may not work as intended.
+Keep in mind, that everything you pass into the renderer, **has to be synchronous**, for it to work as expected. Any
+data component needs, should be provided beforehand. Also, calling some hooks inside a component may not work as
+intended.
 
 ## Usage
 
@@ -82,7 +83,7 @@ export class AppController {
 
     @Get("samplePdf")
     async samplePdf(@Res() res: Response) {
-        const stream = await this.pdfRenderer.generatePdf(React.createElement("div"), [OpenSansRegular]).asStream();
+        const stream = await this.pdfRenderer.generatePdf(<SampleComponent />, [OpenSansRegular]).asStream();
 
         const filename = "sample.pdf";
 
@@ -92,8 +93,24 @@ export class AppController {
         stream.pipe(res);
     }
 }
+
+const SampleComponent: React.FunctionComponent = () => <StyledDiv>sample pdf generator component</StyledDiv>;
+
+const StyledDiv = styled.div`
+    background: blue;
+`;
 ```
 
 ### Styles
 
 For styling your PDF you should use styled components.
+
+### Docker
+
+At the top of your own Dockerfile add the following line.
+
+`FROM ghcr.io/leancodepl/pdf-generator:[version]`
+
+You can also easily get the current version, by using `latest`.
+
+`FROM ghcr.io/leancodepl/pdf-generator:latest`
