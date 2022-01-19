@@ -11,7 +11,8 @@
           "options": {
             "syncVersions": true,
             "skipRootChangelog": true,
-            "skipProjectChangelog": true
+            "skipProjectChangelog": true,
+            "commitMessageFormat": "Release version ${version}"
           }
         }
       }
