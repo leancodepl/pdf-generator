@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "jsx": "react",
     "paths": {
-      "@pdf-generator/pdf-renderer": ["packages/pdf-renderer/src/index.ts"]
+      "@leancodepl/invoice-template": ["packages/invoice-template/src/index.ts"],
+      "@leancodepl/pdf-renderer": ["packages/pdf-renderer/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

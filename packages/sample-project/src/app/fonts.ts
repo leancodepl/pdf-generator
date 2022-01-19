@@ -1,4 +1,4 @@
-import { FontsConfiguration } from "@pdf-generator/pdf-renderer";
+import { FontsConfiguration } from "@leancodepl/pdf-renderer";
 import path = require("path");
 
 export const OpenSansRegular = Symbol("OpenSansRegular");
