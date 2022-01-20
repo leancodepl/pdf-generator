@@ -1,21 +1,20 @@
 import React = require("react");
-import { InvoiceBaseComponent, LocalizatonOptions } from "@leancodepl/invoice-template";
+import { InvoiceBase, LocalizatonOptions, TableDataProp } from "@leancodepl/invoice-template";
 import { Injectable } from "@nestjs/common";
-import moment = require("moment");
 
 const localizatonOptions: LocalizatonOptions = {
-    dateFormat: "YYYY-MM-D",
+    dateFormat: "yyyy-MM-d",
     documentDate: {
         label: "Data wystawienia:",
-        value: moment(),
+        value: new Date(),
     },
     sellDate: {
         label: "Data sprzedaży:",
-        value: moment(),
+        value: new Date(),
     },
     dueDate: {
         label: "Termin płatności:",
-        value: moment(),
+        value: new Date(),
     },
     paymentMethod: {
         label: "Metoda płatności:",
@@ -57,11 +56,42 @@ const localizatonOptions: LocalizatonOptions = {
     },
 };
 
+const mainTable: TableDataProp = {
+    columns: [
+        {
+            title: "Lp",
+            dataIndex: "lp",
+            alignment: "right",
+            width: "22px",
+        },
+        {
+            title: "Nazwa",
+            dataIndex: "name",
+            alignment: "left",
+        },
+    ],
+    data: [
+        {
+            lp: "1",
+            name: "nazwa1",
+        },
+        {
+            lp: "2",
+            name: "nazwa2",
+        },
+    ],
+};
+
 @Injectable()
-export class SampleInvoiceService {
+export class BaseInvoiceService {
     getComponent() {
         return (
-            <InvoiceBaseComponent localizatonOptions={localizatonOptions} logo={<></>} name="Faktura nr FV 1/2055" />
+            <InvoiceBase
+                localizatonOptions={localizatonOptions}
+                logo={<></>}
+                mainTable={mainTable}
+                name="Faktura nr FV 1/2055"
+            />
         );
     }
 }

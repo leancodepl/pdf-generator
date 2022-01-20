@@ -1,16 +1,17 @@
 import * as React from "react";
+import { ReactNode, FunctionComponent } from "react";
 import styled from "styled-components";
 
 type Orientation = "horizontal" | "vertical";
 
 type LabeledFieldProps = {
     orientation: Orientation;
-    label: React.ReactNode;
-    value: React.ReactNode;
+    label: ReactNode;
+    value: ReactNode;
     margin?: string;
 };
 
-const LabeledField: React.FunctionComponent<LabeledFieldProps> = ({ orientation, label, value, margin }) => (
+const LabeledField: FunctionComponent<LabeledFieldProps> = ({ orientation, label, value, margin }) => (
     <Root margin={margin} orientation={orientation}>
         <Label>{label}</Label>
         <Value orientation={orientation}>{value}</Value>

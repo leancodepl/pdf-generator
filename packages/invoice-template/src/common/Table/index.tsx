@@ -1,4 +1,5 @@
 import * as React from "react";
+import { FunctionComponent } from "react";
 import styled from "styled-components";
 
 export type TableColumns = {
@@ -10,13 +11,13 @@ export type TableColumns = {
 
 export type TableData = Record<string, string>[];
 
-type TableProps = {
+export type TableProps = {
     columns: TableColumns;
     data: TableData;
     className?: string;
 };
 
-const Table: React.FunctionComponent<TableProps> = ({ columns, data, className }) => (
+const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
     <table className={className}>
         <thead>
             <tr>
