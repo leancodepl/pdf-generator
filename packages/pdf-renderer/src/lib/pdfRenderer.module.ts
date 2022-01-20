@@ -5,10 +5,16 @@ import { FontLibrary, FontsConfiguration, FontsConfigurationToken } from "./font
 import { PdfGenerator } from "./pdfGenerator.service";
 import { ReactRenderer } from "./reactRenderer.service";
 
+export type PdfRendererConfiguration = {
+    isGlobal?: boolean;
+    fontsConfiguration: FontsConfiguration;
+};
+
 @Module({})
 export class PdfRendererModule {
-    static register({ fontsConfiguration }: { fontsConfiguration: FontsConfiguration }): DynamicModule {
+    static register({ isGlobal = true, fontsConfiguration }: PdfRendererConfiguration): DynamicModule {
         return {
+            global: isGlobal,
             exports: [PdfRenderer],
             module: PdfRendererModule,
             providers: [
