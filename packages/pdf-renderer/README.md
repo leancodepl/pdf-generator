@@ -48,7 +48,20 @@ const fontsConfiguration: FontsConfiguration = {
 })
 ```
 
-#### Fonts configuration
+### Configuration
+
+```
+type PdfRendererConfiguration = {
+    isGlobal?: boolean;
+    fontsConfiguration: FontsConfiguration;
+}
+```
+
+##### Registering a module globally
+
+You can specify if you want to register the module globally. Not specifying makes the module global by default.
+
+##### Fonts configuration
 
 You can use both `Symbol` and `string` as font's key. `fontFile` should be a `string` containing a path or a `Buffer`.
 
