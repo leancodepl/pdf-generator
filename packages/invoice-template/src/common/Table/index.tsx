@@ -19,10 +19,15 @@ export type TableProps = {
 
 const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
     <table className={className}>
+        <colgroup>
+            {columns.map((column, index) => (
+                <col key={index} span={1} style={{ width: column.width }} />
+            ))}
+        </colgroup>
         <thead>
             <tr>
                 {columns.map(column => (
-                    <Th key={column.dataIndex} alignment="center" width={column.width}>
+                    <Th key={column.dataIndex} alignment="center">
                         {column.title}
                     </Th>
                 ))}
@@ -30,9 +35,9 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
         </thead>
         <tbody>
             {data.map((row, index) => (
-                <tr key={`row${index}`}>
+                <tr key={index}>
                     {columns.map(column => (
-                        <Td key={`${column.dataIndex}${index}`} alignment={column.alignment} width={column.width}>
+                        <Td key={index} alignment={column.alignment}>
                             {row[column.dataIndex]}
                         </Td>
                     ))}
@@ -50,15 +55,13 @@ type TableCellProps = {
 const Th = styled.th<TableCellProps>`
     font-weight: 400;
 
-    ${props => (props.width ? `width: ${props.width};` : "")}
-    ${props => (props.alignment ? `text-align: ${props.alignment};` : "")}
+    ${({ alignment }) => (alignment ? `text-align: ${alignment};` : "")}
 `;
 
 const Td = styled.td<TableCellProps>`
-    padding: 1px 2px;
+    padding: 1pt 2pt;
 
-    ${props => (props.width ? `max-width: ${props.width}; width: ${props.width};` : "")}
-    ${props => (props.alignment ? `text-align: ${props.alignment};` : "")}
+    ${({ alignment }) => (alignment ? `text-align: ${alignment};` : "")}
 `;
 
 export default Table;

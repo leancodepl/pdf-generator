@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/invoice-template",
         "tsConfig": "packages/invoice-template/tsconfig.lib.json",
         "project": "packages/invoice-template/package.json",
         "entryFile": "packages/invoice-template/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "swc",
         "assets": [
@@ -30,20 +26,14 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/invoice-template/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/invoice-template/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/invoice-template"
-      ],
+      "outputs": ["coverage/packages/invoice-template"],
       "options": {
         "jestConfig": "packages/invoice-template/jest.config.js",
         "passWithNoTests": true

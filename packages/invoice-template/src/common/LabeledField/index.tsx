@@ -13,30 +13,27 @@ type LabeledFieldProps = {
 
 const LabeledField: FunctionComponent<LabeledFieldProps> = ({ orientation, label, value, margin }) => (
     <Root margin={margin} orientation={orientation}>
-        <Label>{label}</Label>
-        <Value orientation={orientation}>{value}</Value>
+        <span>{label}</span>
+        <Value>{value}</Value>
     </Root>
 );
 
-type OrientationProps = {
+type RootProps = {
+    margin?: string;
     orientation: Orientation;
 };
 
-type RootProps = {
-    margin?: string;
-} & OrientationProps;
+const Value = styled.span``;
 
 const Root = styled.div<RootProps>`
     display: flex;
-    flex-direction: ${props => (props.orientation === "horizontal" ? "row" : "column")};
+    flex-direction: ${({ orientation }) => (orientation === "horizontal" ? "row" : "column")};
 
-    ${props => (props.margin ? `margin: ${props.margin};` : "")}
-`;
+    ${({ margin }) => (margin ? `margin: ${margin};` : "")}
 
-const Label = styled.span``;
-
-const Value = styled.span<OrientationProps>`
-    margin-left: ${props => (props.orientation === "horizontal" ? "auto" : "0")};
+    ${Value} {
+        margin-left: ${({ orientation }) => (orientation === "horizontal" ? "auto" : "0")};
+    }
 `;
 
 export default LabeledField;

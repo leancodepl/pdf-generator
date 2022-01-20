@@ -1,62 +1,67 @@
 import React = require("react");
-import { InvoiceBase, LocalizatonOptions, TableDataProp } from "@leancodepl/invoice-template";
+import { InvoiceBase, InvoiceValues, LocalizationOptions, TableDataProp } from "@leancodepl/invoice-template";
 import { Injectable } from "@nestjs/common";
 
-const localizatonOptions: LocalizatonOptions = {
+@Injectable()
+export class BaseInvoiceService {
+    getComponent() {
+        return (
+            <InvoiceBase
+                invoiceItemsTable={invoiceItemsTable}
+                invoiceValues={invoiceValues}
+                localizationOptions={localizationOptions}
+            />
+        );
+    }
+}
+
+const localizationOptions: LocalizationOptions = {
+    locale: "en-EN",
+    currency: "EUR",
     dateFormat: "yyyy-MM-d",
-    documentDate: {
-        label: "Data wystawienia:",
-        value: new Date(),
-    },
-    sellDate: {
-        label: "Data sprzedaży:",
-        value: new Date(),
-    },
-    dueDate: {
-        label: "Termin płatności:",
-        value: new Date(),
-    },
-    paymentMethod: {
-        label: "Metoda płatności:",
-        value: "przelew",
-    },
-    seller: {
-        label: "Sprzedawca",
-        value: (
-            <>
-                nazwa
-                <br />
-                ulica
-                <br />
-                miasto
-                <br />
-                nip
-                <br />
-                number konta
-            </>
-        ),
-    },
-    buyer: {
-        label: "Nabywca",
-        value: (
-            <>
-                nazwa
-                <br />
-                ulica
-                <br />
-                miasto
-                <br />
-                nip
-            </>
-        ),
-    },
-    total: {
-        label: "Suma:",
-        value: "14 999,00 PLN",
-    },
+    documentDateLabel: "Data wystawienia:",
+    sellDateLabel: "Data sprzedaży:",
+    dueDateLabel: "Termin płatności:",
+    paymentMethodLabel: "Metoda płatności:",
+    sellerLabel: "Sprzedawca",
+    buyerLabel: "Nabywca",
+    totalLabel: "Suma:",
 };
 
-const mainTable: TableDataProp = {
+const invoiceValues: InvoiceValues = {
+    invoiceName: "Faktura nr FV 1/2055",
+    documentDate: new Date(),
+    sellDate: new Date(),
+    dueDate: new Date(),
+    paymentMethod: "przelew",
+    seller: (
+        <>
+            nazwa
+            <br />
+            ulica
+            <br />
+            miasto
+            <br />
+            nip
+            <br />
+            number konta
+        </>
+    ),
+    buyer: (
+        <>
+            nazwa
+            <br />
+            ulica
+            <br />
+            miasto
+            <br />
+            nip
+        </>
+    ),
+    total: "14 999,00 PLN",
+};
+
+const invoiceItemsTable: TableDataProp = {
     columns: [
         {
             title: "Lp",
@@ -81,17 +86,3 @@ const mainTable: TableDataProp = {
         },
     ],
 };
-
-@Injectable()
-export class BaseInvoiceService {
-    getComponent() {
-        return (
-            <InvoiceBase
-                localizatonOptions={localizatonOptions}
-                logo={<></>}
-                mainTable={mainTable}
-                name="Faktura nr FV 1/2055"
-            />
-        );
-    }
-}

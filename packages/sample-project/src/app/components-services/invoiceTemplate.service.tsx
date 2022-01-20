@@ -1,81 +1,31 @@
 import React = require("react");
 import {
     InvoiceTemplate,
-    LocalizatonOptions,
-    MainTableData,
+    LocalizationOptions,
+    InvoiceItemsTableData,
     TaxesData,
     TaxesTableLabels,
+    InvoiceTemplateValues,
 } from "@leancodepl/invoice-template";
 import { Injectable } from "@nestjs/common";
 
-const taxesData: TaxesData = {
-    vat: 23,
-    vat2: 50,
-};
+@Injectable()
+export class InvoiceTemplateService {
+    getComponent() {
+        return (
+            <InvoiceTemplate
+                invoiceItemsTableData={invoiceItemsTableData}
+                invoiceItemsTableLabels={invoiceItemsTableLabels}
+                invoiceValues={invoiceValues}
+                localizationOptions={localizationOptions}
+                taxesData={taxesData}
+                taxesTableLabels={taxesLabels}
+            />
+        );
+    }
+}
 
-const localizatonOptions: LocalizatonOptions = {
-    dateFormat: "yyyy-MM-d",
-    documentDate: {
-        label: "Data wystawienia:",
-        value: new Date(),
-    },
-    sellDate: {
-        label: "Data sprzedaży:",
-        value: new Date(),
-    },
-    dueDate: {
-        label: "Termin płatności:",
-        value: new Date(),
-    },
-    paymentMethod: {
-        label: "Metoda płatności:",
-        value: "przelew",
-    },
-    seller: {
-        label: "Sprzedawca",
-        value: (
-            <>
-                nazwa
-                <br />
-                ulica
-                <br />
-                miasto
-                <br />
-                nip
-                <br />
-                number konta
-            </>
-        ),
-    },
-    buyer: {
-        label: "Nabywca",
-        value: (
-            <>
-                nazwa
-                <br />
-                ulica
-                <br />
-                miasto
-                <br />
-                nip
-            </>
-        ),
-    },
-    total: {
-        label: "Suma:",
-        value: "",
-    },
-};
-
-const taxesLabels: TaxesTableLabels = {
-    taxRate: "Stawka VAT",
-    netValue: "Wartość netto",
-    taxValue: "Kwota VAT",
-    grossValue: "Wartość brutto",
-    total: "Razem",
-};
-
-const mainTableData: MainTableData = [
+const invoiceItemsTableData: InvoiceItemsTableData = [
     {
         name: "name1",
         count: 10,
@@ -96,19 +46,71 @@ const mainTableData: MainTableData = [
     },
 ];
 
-@Injectable()
-export class InvoiceTemplateService {
-    getComponent() {
-        return (
-            <InvoiceTemplate
-                locale={{ currency: "EUR", language: "en-EN" }}
-                localizatonOptions={localizatonOptions}
-                logo={<></>}
-                mainTableData={mainTableData}
-                name="Faktura nr FV 1/2055"
-                taxesData={taxesData}
-                taxesTableLabels={taxesLabels}
-            />
-        );
-    }
-}
+const taxesData: TaxesData = {
+    vat: 23,
+    vat2: 50,
+};
+
+const invoiceItemsTableLabels = {
+    lp: "Lp",
+    name: "Nazwa",
+    unit: "Jednostka",
+    count: "Ilość",
+    netValueEach: "Cena netto",
+    taxRate: "Stawka",
+    netValue: "Wartość netto",
+    grossValue: "Wartość brutto",
+};
+
+const taxesLabels: TaxesTableLabels = {
+    taxRate: "Stawka VAT",
+    netValue: "Wartość netto",
+    taxValue: "Kwota VAT",
+    grossValue: "Wartość brutto",
+    total: "Razem",
+};
+
+const localizationOptions: LocalizationOptions = {
+    locale: "en-EN",
+    currency: "EUR",
+    dateFormat: "yyyy-MM-d",
+    documentDateLabel: "Data wystawienia:",
+    sellDateLabel: "Data sprzedaży:",
+    dueDateLabel: "Termin płatności:",
+    paymentMethodLabel: "Metoda płatności:",
+    sellerLabel: "Sprzedawca",
+    buyerLabel: "Nabywca",
+    totalLabel: "Suma:",
+};
+
+const invoiceValues: InvoiceTemplateValues = {
+    invoiceName: "Faktura nr FV 1/2055",
+    documentDate: new Date(),
+    sellDate: new Date(),
+    dueDate: new Date(),
+    paymentMethod: "przelew",
+    seller: (
+        <>
+            nazwa
+            <br />
+            ulica
+            <br />
+            miasto
+            <br />
+            nip
+            <br />
+            number konta
+        </>
+    ),
+    buyer: (
+        <>
+            nazwa
+            <br />
+            ulica
+            <br />
+            miasto
+            <br />
+            nip
+        </>
+    ),
+};

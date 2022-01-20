@@ -5,76 +5,85 @@ import styled from "styled-components";
 import LabeledField from "../common/LabeledField";
 import Table, { TableProps } from "../common/Table";
 
-const mainTableClassName = "main-table";
+const invoiceItemsTableClassName = "main-table";
 const taxesTableClassName = "taxes-table";
 
 export type TableDataProp = Omit<TableProps, "className">;
 
-export type LabeledField<T> = {
-    label: string;
-    value: T;
+export type LocalizationOptions = {
+    locale: string;
+    currency: string;
+    dateFormat: string;
+    documentDateLabel: string;
+    sellDateLabel: string;
+    dueDateLabel: string;
+    paymentMethodLabel: string;
+    sellerLabel: string;
+    buyerLabel: string;
+    totalLabel: string;
 };
 
-export type LocalizatonOptions = {
-    dateFormat: string;
-    documentDate: LabeledField<Date>;
-    sellDate: LabeledField<Date>;
-    dueDate: LabeledField<Date>;
-    paymentMethod: LabeledField<ReactNode>;
-    seller: LabeledField<ReactNode>;
-    buyer: LabeledField<ReactNode>;
-    total: LabeledField<ReactNode>;
+export type InvoiceValues = {
+    logo?: ReactNode;
+    invoiceName: ReactNode;
+    documentDate: Date;
+    sellDate: Date;
+    dueDate: Date;
+    paymentMethod: ReactNode;
+    seller: ReactNode;
+    buyer: ReactNode;
+    total: ReactNode;
 };
 
 export type InvoiceBaseProps = {
-    logo: ReactNode;
-    name: ReactNode;
-    localizatonOptions: LocalizatonOptions;
-    mainTable: TableDataProp;
+    localizationOptions: LocalizationOptions;
+    invoiceValues: InvoiceValues;
+    invoiceItemsTable: TableDataProp;
     taxesTable?: TableDataProp;
 };
 
 export const InvoiceBase: FunctionComponent<InvoiceBaseProps> = ({
-    logo,
-    name,
-    localizatonOptions: { dateFormat, documentDate, sellDate, dueDate, paymentMethod, seller, buyer, total },
-    mainTable,
+    localizationOptions: {
+        dateFormat,
+        documentDateLabel,
+        sellDateLabel,
+        dueDateLabel,
+        paymentMethodLabel,
+        sellerLabel,
+        buyerLabel,
+        totalLabel,
+    },
+    invoiceValues: { logo, invoiceName, documentDate, sellDate, dueDate, paymentMethod, seller, buyer, total },
+    invoiceItemsTable,
     taxesTable,
 }) => (
     <Root>
         <LogoWrapper>{logo}</LogoWrapper>
         <TitleWrapper>
-            <Name>{name}</Name>
-            <DocumentDate
-                label={documentDate.label}
-                orientation="horizontal"
-                value={format(documentDate.value, dateFormat)}
-            />
-            <SellDate label={sellDate.label} orientation="horizontal" value={format(sellDate.value, dateFormat)} />
-            <DueDate label={dueDate.label} orientation="horizontal" value={format(dueDate.value, dateFormat)} />
-            <PaymentMethod label={paymentMethod.label} orientation="horizontal" value={paymentMethod.value} />
+            <Name>{invoiceName}</Name>
+            <DocumentDate label={documentDateLabel} orientation="horizontal" value={format(documentDate, dateFormat)} />
+            <SellDate label={sellDateLabel} orientation="horizontal" value={format(sellDate, dateFormat)} />
+            <DueDate label={dueDateLabel} orientation="horizontal" value={format(dueDate, dateFormat)} />
+            <PaymentMethod label={paymentMethodLabel} orientation="horizontal" value={paymentMethod} />
         </TitleWrapper>
-        <SellerWrapper label={<b>{seller.label}</b>} margin="30pt 0 0 0" orientation="vertical" value={seller.value} />
-        <BuyerWrapper label={<b>{buyer.label}</b>} margin="30pt 0 0 0" orientation="vertical" value={buyer.value} />
-        <Table className={mainTableClassName} {...mainTable} />
+        <SellerWrapper label={<b>{sellerLabel}</b>} margin="30pt 0 0 0" orientation="vertical" value={seller} />
+        <BuyerWrapper label={<b>{buyerLabel}</b>} margin="30pt 0 0 0" orientation="vertical" value={buyer} />
+        <Table className={invoiceItemsTableClassName} {...invoiceItemsTable} />
         {taxesTable && <Table className={taxesTableClassName} {...taxesTable} />}
         <Total>
-            <LabeledField label={total.label} orientation="horizontal" value={total.value} />
+            <LabeledField label={totalLabel} orientation="horizontal" value={total} />
         </Total>
     </Root>
 );
 
 const Root = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto auto;
-    row-gap: 15pt;
-
-    grid-template-areas:
+    grid-template:
         "logo title"
         "seller buyer"
-        "mainTable mainTable"
-        "taxesTable total";
+        "invoiceItemsTable invoiceItemsTable"
+        "taxesTable total" / 1fr 1fr;
+    row-gap: 15pt;
 
     padding: 45pt 26pt;
 
@@ -91,8 +100,8 @@ const Root = styled.div`
         }
     }
 
-    .${mainTableClassName} {
-        grid-area: mainTable;
+    .${invoiceItemsTableClassName} {
+        grid-area: invoiceItemsTable;
 
         margin-top: 30pt;
     }
@@ -110,14 +119,10 @@ const TitleWrapper = styled.div`
     grid-area: title;
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
-
-    grid-template-areas:
+    grid-template:
         "name name"
         "documentDate sellDate"
-        "dueDate payment";
-
+        "dueDate payment" / 1fr 1fr;
     column-gap: 15pt;
     row-gap: 12pt;
 `;
