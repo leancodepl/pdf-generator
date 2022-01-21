@@ -1,19 +1,19 @@
-import React = require("react");
+import { render } from "@testing-library/react";
+import { InvoiceTemplate } from ".";
 import {
-    InvoiceTemplate,
-    LocalizationOptions,
     InvoiceItemsTableData,
+    InvoiceItemsTableLabels,
+    InvoiceTemplateValues,
+    LocalizationOptions,
     TaxesData,
     TaxesTableLabels,
-    InvoiceTemplateValues,
-    InvoiceItemsTableLabels,
-} from "@leancodepl/invoice-template";
-import { Injectable } from "@nestjs/common";
+} from "..";
 
-@Injectable()
-export class InvoiceTemplateService {
-    getComponent() {
-        return (
+describe("InvoiceTemplate", () => {
+    let component: HTMLElement;
+
+    beforeAll(() => {
+        component = render(
             <InvoiceTemplate
                 invoiceItemsTableData={invoiceItemsTableData}
                 invoiceItemsTableLabels={invoiceItemsTableLabels}
@@ -21,10 +21,14 @@ export class InvoiceTemplateService {
                 localizationOptions={localizationOptions}
                 taxesData={taxesData}
                 taxesTableLabels={taxesLabels}
-            />
-        );
-    }
-}
+            />,
+        ).baseElement as HTMLElement;
+    });
+
+    it("should render a component without errors", () => {
+        expect(component).toBeTruthy();
+    });
+});
 
 const invoiceItemsTableData: InvoiceItemsTableData = [
     {
