@@ -1,44 +1,59 @@
 import { InvoiceItemsTableData, InvoiceItemsTableLabels, LocalizationOptions, TaxesData, TaxesTableLabels } from "..";
-import { useInvoiceTemplate, UseInvoiceTemplateReturn } from "./useInvoiceTemplate";
+import { useInvoiceTemplate } from "./useInvoiceTemplate";
 
-const netValueString = "€4,000.00";
-const taxValueString = "€1,055.00";
 const totalString = "€5,055.00";
+const taxValueString = "690,00 zł";
+const netValueString = "￥2,000.00";
 
 describe("useInvoiceTemplate", () => {
-    let invoiceTemplate: UseInvoiceTemplateReturn;
-
-    beforeAll(() => {
-        invoiceTemplate = useInvoiceTemplate({
-            localizationOptions,
-            invoiceItemsTableData,
-            taxesData,
+    it("should calculate correct total", () => {
+        const {
+            taxesTable: { data },
+            total,
+        } = useInvoiceTemplate({
+            localizationOptions: localizationOptions1,
+            invoiceItemsTableData: invoiceItemsTableData1,
+            taxesData: taxesData1,
             invoiceItemsTableLabels,
             taxesTableLabels,
         });
-    });
 
-    it("should calculate correct netValue", () => {
-        const { data } = invoiceTemplate.taxesTable;
-
-        expect(data[data.length - 1]["netValue"]).toEqual(netValueString);
+        expect(data[data.length - 1]["grossValue"]).toEqual(totalString);
+        expect(total).toEqual(totalString);
     });
 
     it("should calculate correct taxValue", () => {
-        const { data } = invoiceTemplate.taxesTable;
+        const {
+            taxesTable: { data },
+        } = useInvoiceTemplate({
+            localizationOptions: localizationOptions2,
+            invoiceItemsTableData: invoiceItemsTableData2,
+            taxesData: taxesData2,
+            invoiceItemsTableLabels,
+            taxesTableLabels,
+        });
 
-        expect(data[data.length - 1]["taxValue"]).toEqual(taxValueString);
+        expect(Buffer.from(data[data.length - 1]["taxValue"], "base64").toString("base64")).toEqual(
+            Buffer.from(taxValueString, "base64").toString("base64"),
+        );
     });
 
-    it("should calculate correct total", () => {
-        const { data } = invoiceTemplate.taxesTable;
+    it("should calculate correct netValue", () => {
+        const {
+            taxesTable: { data },
+        } = useInvoiceTemplate({
+            localizationOptions: localizationOptions3,
+            invoiceItemsTableData: invoiceItemsTableData3,
+            taxesData: taxesData3,
+            invoiceItemsTableLabels,
+            taxesTableLabels,
+        });
 
-        expect(data[data.length - 1]["grossValue"]).toEqual(totalString);
-        expect(invoiceTemplate.total).toEqual(totalString);
+        expect(data[data.length - 1]["netValue"]).toEqual(netValueString);
     });
 });
 
-const invoiceItemsTableData: InvoiceItemsTableData = [
+const invoiceItemsTableData1: InvoiceItemsTableData = [
     {
         name: "name1",
         count: 10,
@@ -59,9 +74,55 @@ const invoiceItemsTableData: InvoiceItemsTableData = [
     },
 ];
 
-const taxesData: TaxesData = {
+const taxesData1: TaxesData = {
     vat: 23,
     vat2: 50,
+};
+
+const invoiceItemsTableData2: InvoiceItemsTableData = [
+    {
+        name: "name1",
+        count: 10,
+        priceEach: 100.0,
+        taxKey: "vat",
+    },
+    {
+        name: "name2",
+        count: 10,
+        priceEach: 100.0,
+        taxKey: "vat",
+    },
+    {
+        name: "name3",
+        count: 10,
+        priceEach: 100.0,
+        taxKey: "vat",
+    },
+];
+
+const taxesData2: TaxesData = {
+    vat: 23,
+};
+
+const invoiceItemsTableData3: InvoiceItemsTableData = [
+    {
+        name: "name1",
+        count: 10,
+        priceEach: 100.0,
+        taxKey: "vat1",
+    },
+    {
+        name: "name2",
+        count: 10,
+        priceEach: 100.0,
+        taxKey: "vat3",
+    },
+];
+
+const taxesData3: TaxesData = {
+    vat1: 23,
+    vat2: 5,
+    vat3: 10,
 };
 
 const invoiceItemsTableLabels: InvoiceItemsTableLabels = {
@@ -83,9 +144,7 @@ const taxesTableLabels: TaxesTableLabels = {
     total: "Razem",
 };
 
-const localizationOptions: LocalizationOptions = {
-    locale: "en-EN",
-    currency: "EUR",
+const localizationOptions = {
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Data wystawienia:",
     sellDateLabel: "Data sprzedaży:",
@@ -94,4 +153,22 @@ const localizationOptions: LocalizationOptions = {
     sellerLabel: "Sprzedawca",
     buyerLabel: "Nabywca",
     totalLabel: "Suma:",
+};
+
+const localizationOptions1: LocalizationOptions = {
+    locale: "en-EN",
+    currency: "EUR",
+    ...localizationOptions,
+};
+
+const localizationOptions2: LocalizationOptions = {
+    locale: "pl-PL",
+    currency: "PLN",
+    ...localizationOptions,
+};
+
+const localizationOptions3: LocalizationOptions = {
+    locale: "ja-JP",
+    currency: "JPY",
+    ...localizationOptions,
 };

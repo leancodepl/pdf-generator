@@ -30,26 +30,21 @@ const invoiceItemsTableData: InvoiceItemsTableData = [
     {
         name: "name1",
         count: 10,
-        priceEach: 150.0,
-        taxKey: "vat",
+        priceEach: 100.0,
+        taxKey: "vat1",
     },
     {
         name: "name2",
         count: 10,
-        priceEach: 200.0,
-        taxKey: "vat",
-    },
-    {
-        name: "name3",
-        count: 5,
         priceEach: 100.0,
-        taxKey: "vat2",
+        taxKey: "vat3",
     },
 ];
 
 const taxesData: TaxesData = {
-    vat: 23,
-    vat2: 50,
+    vat1: 23,
+    vat2: 5,
+    vat3: 10,
 };
 
 const invoiceItemsTableLabels: InvoiceItemsTableLabels = {
@@ -72,8 +67,8 @@ const taxesLabels: TaxesTableLabels = {
 };
 
 const localizationOptions: LocalizationOptions = {
-    locale: "en-EN",
-    currency: "EUR",
+    locale: "ja-JP",
+    currency: "JPY",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Data wystawienia:",
     sellDateLabel: "Data sprzedaży:",
