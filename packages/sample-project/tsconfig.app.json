@@ -8,5 +8,5 @@
     "target": "es2015"
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts", "src/app/components/SampleComponent/sampleComponent.service.tsx"]
+  "include": ["**/*.ts", "../invoice-template/src/components/SampleComponent/sampleComponent.service.tsx"]
 }

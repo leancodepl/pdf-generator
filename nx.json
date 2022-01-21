@@ -15,5 +15,12 @@
       }
     }
   },
-  "defaultProject": "sample-project"
+  "defaultProject": "sample-project",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    }
+  }
 }

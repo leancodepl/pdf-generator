@@ -26,7 +26,7 @@ intended.
 To use pdf-renderer you have to register it inside a module of your own NestJS app. Register takes a single argument, an
 object with a `fontsConfiguration` field. If needed, `FontsConfiguration` type can be imported from the package.
 
-```
+```ts
 import { PdfRendererModule, FontsConfiguration } from "@leancodepl/pdf-renderer";
 
 export const OpenSansRegular = Symbol("OpenSansRegular");
@@ -50,11 +50,11 @@ const fontsConfiguration: FontsConfiguration = {
 
 ### Configuration
 
-```
+```ts
 type PdfRendererConfiguration = {
     isGlobal?: boolean;
     fontsConfiguration: FontsConfiguration;
-}
+};
 ```
 
 ##### Registering a module globally
@@ -71,7 +71,7 @@ You can generate a PDF by passing react component and array of fonts' keys, whic
 (passing an incorrect key will result in an exception being thrown) to generatePdf method. Method call can be followed
 with one of the returned functions, to choose the format of data returned by the renderer.
 
-```
+```ts
 PdfRenderer.generatePdf(element: ReactElement, fonts?: (symbol | string)[]): {
     asHtml: () => string;
     asBuffer: () => Promise<Buffer>;
@@ -79,7 +79,7 @@ PdfRenderer.generatePdf(element: ReactElement, fonts?: (symbol | string)[]): {
 }
 ```
 
-```
+```ts
 const html = PdfRenderer.generatePdf(React.createElement("div"), []).asHtml();
 ```
 
@@ -87,7 +87,7 @@ const html = PdfRenderer.generatePdf(React.createElement("div"), []).asHtml();
 
 As an example, you can inject the PdfRenderer service into your controller and make the PDF file downloadable.
 
-```
+```ts
 import { PdfRenderer } from "@leancodepl/pdf-renderer";
 
 @Controller("pdf-renderer")
