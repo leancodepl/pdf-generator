@@ -104,7 +104,7 @@ const invoiceValues: InvoiceTemplateValues = {
             <br />
             nip
             <br />
-            number konta
+            numer konta
         </>
     ),
     buyer: (
