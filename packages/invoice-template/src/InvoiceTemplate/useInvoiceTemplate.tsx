@@ -111,7 +111,7 @@ const getInvoiceItemsTableColumns = (invoiceItemsTableLables: InvoiceItemsTableL
         title: invoiceItemsTableLables.index,
         dataIndex: "index",
         alignment: "right",
-        width: "22px",
+        width: "18pt",
     },
     {
         title: invoiceItemsTableLables.name,

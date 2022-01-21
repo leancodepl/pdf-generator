@@ -67,7 +67,7 @@ const invoiceItemsTable: TableDataProp = {
             title: "Lp",
             dataIndex: "lp",
             alignment: "right",
-            width: "22px",
+            width: "18pt",
         },
         {
             title: "Nazwa",
