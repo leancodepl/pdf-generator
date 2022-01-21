@@ -52,7 +52,7 @@ const taxesData: TaxesData = {
 };
 
 const invoiceItemsTableLabels = {
-    lp: "Lp",
+    index: "Lp",
     name: "Nazwa",
     unit: "Jednostka",
     count: "Ilość",
@@ -75,7 +75,7 @@ const localizationOptions: LocalizationOptions = {
     currency: "EUR",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Data wystawienia:",
-    sellDateLabel: "Data sprzedaży:",
+    saleDateLabel: "Data sprzedaży:",
     dueDateLabel: "Termin płatności:",
     paymentMethodLabel: "Metoda płatności:",
     sellerLabel: "Sprzedawca",
@@ -86,7 +86,7 @@ const localizationOptions: LocalizationOptions = {
 const invoiceValues: InvoiceTemplateValues = {
     invoiceName: "Faktura nr FV 1/2055",
     documentDate: new Date(),
-    sellDate: new Date(),
+    saleDate: new Date(),
     dueDate: new Date(),
     paymentMethod: "przelew",
     seller: (

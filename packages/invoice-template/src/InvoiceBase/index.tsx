@@ -15,7 +15,7 @@ export type LocalizationOptions = {
     currency: string;
     dateFormat: string;
     documentDateLabel: string;
-    sellDateLabel: string;
+    saleDateLabel: string;
     dueDateLabel: string;
     paymentMethodLabel: string;
     sellerLabel: string;
@@ -27,7 +27,7 @@ export type InvoiceValues = {
     logo?: ReactNode;
     invoiceName: ReactNode;
     documentDate: Date;
-    sellDate: Date;
+    saleDate: Date;
     dueDate: Date;
     paymentMethod: ReactNode;
     seller: ReactNode;
@@ -46,14 +46,14 @@ export const InvoiceBase: FunctionComponent<InvoiceBaseProps> = ({
     localizationOptions: {
         dateFormat,
         documentDateLabel,
-        sellDateLabel,
+        saleDateLabel,
         dueDateLabel,
         paymentMethodLabel,
         sellerLabel,
         buyerLabel,
         totalLabel,
     },
-    invoiceValues: { logo, invoiceName, documentDate, sellDate, dueDate, paymentMethod, seller, buyer, total },
+    invoiceValues: { logo, invoiceName, documentDate, saleDate, dueDate, paymentMethod, seller, buyer, total },
     invoiceItemsTable,
     taxesTable,
 }) => (
@@ -62,12 +62,12 @@ export const InvoiceBase: FunctionComponent<InvoiceBaseProps> = ({
         <TitleWrapper>
             <Name>{invoiceName}</Name>
             <DocumentDate label={documentDateLabel} orientation="horizontal" value={format(documentDate, dateFormat)} />
-            <SellDate label={sellDateLabel} orientation="horizontal" value={format(sellDate, dateFormat)} />
+            <SaleDate label={saleDateLabel} orientation="horizontal" value={format(saleDate, dateFormat)} />
             <DueDate label={dueDateLabel} orientation="horizontal" value={format(dueDate, dateFormat)} />
             <PaymentMethod label={paymentMethodLabel} orientation="horizontal" value={paymentMethod} />
         </TitleWrapper>
-        <SellerWrapper label={<b>{sellerLabel}</b>} margin="30pt 0 0 0" orientation="vertical" value={seller} />
-        <BuyerWrapper label={<b>{buyerLabel}</b>} margin="30pt 0 0 0" orientation="vertical" value={buyer} />
+        <SellerWrapper label={<b>{sellerLabel}</b>} marginTop="large" orientation="vertical" value={seller} />
+        <BuyerWrapper label={<b>{buyerLabel}</b>} marginTop="large" orientation="vertical" value={buyer} />
         <Table className={invoiceItemsTableClassName} {...invoiceItemsTable} />
         {taxesTable && <Table className={taxesTableClassName} {...taxesTable} />}
         <Total>
@@ -78,7 +78,7 @@ export const InvoiceBase: FunctionComponent<InvoiceBaseProps> = ({
 
 const Root = styled.div`
     display: grid;
-    grid-template:
+    grid:
         "logo title"
         "seller buyer"
         "invoiceItemsTable invoiceItemsTable"
@@ -119,9 +119,9 @@ const TitleWrapper = styled.div`
     grid-area: title;
 
     display: grid;
-    grid-template:
+    grid:
         "name name"
-        "documentDate sellDate"
+        "documentDate saleDate"
         "dueDate payment" / 1fr 1fr;
     column-gap: 15pt;
     row-gap: 12pt;
@@ -141,8 +141,8 @@ const DocumentDate = styled(LabeledField)`
     grid-area: documentDate;
 `;
 
-const SellDate = styled(LabeledField)`
-    grid-area: sellDate;
+const SaleDate = styled(LabeledField)`
+    grid-area: saleDate;
 `;
 
 const DueDate = styled(LabeledField)`

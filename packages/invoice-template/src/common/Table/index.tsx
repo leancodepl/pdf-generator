@@ -36,7 +36,7 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
         <tbody>
             {data.map((row, index) => (
                 <tr key={index}>
-                    {columns.map(column => (
+                    {columns.map((column, index) => (
                         <Td key={index} alignment={column.alignment}>
                             {row[column.dataIndex]}
                         </Td>

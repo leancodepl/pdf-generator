@@ -55,7 +55,7 @@ const createTablesData = (
         const netValue = row.count * row.priceEach;
 
         return {
-            lp: (index + 1).toString(),
+            index: (index + 1).toString(),
             name: row.name,
             unit: "szt.",
             count: row.count.toString(),
@@ -108,8 +108,8 @@ const createTablesData = (
 
 const getInvoiceItemsTableColumns = (invoiceItemsTableLables: InvoiceItemsTableLabels): TableColumns => [
     {
-        title: invoiceItemsTableLables.lp,
-        dataIndex: "lp",
+        title: invoiceItemsTableLables.index,
+        dataIndex: "index",
         alignment: "right",
         width: "22px",
     },

@@ -11,7 +11,7 @@ export type InvoiceItemsTableData = {
 }[];
 
 export type InvoiceItemsTableLabels = {
-    lp: string;
+    index: string;
     name: string;
     unit: string;
     count: string;
@@ -39,7 +39,7 @@ type InvoiceTemplateProps = {
     invoiceItemsTableLabels: InvoiceItemsTableLabels;
     taxesTableLabels: TaxesTableLabels;
     invoiceValues: InvoiceTemplateValues;
-} & Omit<InvoiceBaseProps, "invoiceValues" | "invoiceItemsTable" | "taxesTable">;
+} & Pick<InvoiceBaseProps, "localizationOptions">;
 
 export const InvoiceTemplate: FunctionComponent<InvoiceTemplateProps> = ({
     localizationOptions,
