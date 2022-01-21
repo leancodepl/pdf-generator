@@ -6,7 +6,7 @@ Invoice templates created with react.
 
 Basic template component creates a document with logo, dates, seller and buyer info, and summary.
 
-```
+```ts
 type InvoiceBaseProps = {
     localizationOptions: LocalizationOptions;
     invoiceValues: InvoiceValues;
@@ -14,13 +14,12 @@ type InvoiceBaseProps = {
     taxesTable?: TableDataProp;
 };
 
-
 type LocalizationOptions = {
     locale: string;
     currency: string;
     dateFormat: string;
     documentDateLabel: string;
-    saleDateLabel: string;
+    sellDateLabel: string;
     dueDateLabel: string;
     paymentMethodLabel: string;
     sellerLabel: string;
@@ -30,9 +29,9 @@ type LocalizationOptions = {
 
 type InvoiceValues = {
     logo?: ReactNode;
-    invoiceName: ReactNode;
+    invoiceTitle: ReactNode;
     documentDate: Date;
-    saleDate: Date;
+    sellDate: Date;
     dueDate: Date;
     paymentMethod: ReactNode;
     seller: ReactNode;
@@ -63,8 +62,9 @@ The type of component's props.
 
 Info about the
 
--   locale (eg. `en_EN`)
--   currency
+-   locale (eg. `en_EN`, learn more about locales
+    [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl))
+-   currency, currency code (eg. `EUR`, [list](https://www.techonthenet.com/js/currency_codes.php))
 -   date format, use the format compatible with [date-fns documentation](https://date-fns.org/v2.28.0/docs/format)
 -   all the labels texts
 
@@ -79,19 +79,19 @@ the `dataIndex` of chosen column.
 
 ### InvoiceBase example
 
-```
+```ts
 <InvoiceBase
     invoiceItemsTable={invoiceItemsTable}
     invoiceValues={invoiceValues}
     localizationOptions={localizationOptions}
-/>
+/>;
 
 const localizationOptions: LocalizationOptions = {
     locale: "en-EN",
     currency: "EUR",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Document date:",
-    saleDateLabel: "Sale date:",
+    sellDateLabel: "Sell date:",
     dueDateLabel: "Due date:",
     paymentMethodLabel: "Payment method:",
     sellerLabel: "Seller",
@@ -100,9 +100,9 @@ const localizationOptions: LocalizationOptions = {
 };
 
 const invoiceValues: InvoiceValues = {
-    invoiceName: "Invoice 123/2020",
+    invoiceTitle: "Invoice 123/2020",
     documentDate: new Date(),
-    saleDate: new Date(),
+    sellDate: new Date(),
     dueDate: new Date(),
     paymentMethod: "cash",
     seller: "name",
@@ -142,7 +142,7 @@ const invoiceItemsTable: TableDataProp = {
 Extended version of InvoiceBase, it takes info about taxes, creates the table out of it, and calculates all the values
 automatically.
 
-```
+```ts
 type InvoiceTemplateProps = {
     localizationOptions: LocalizationOptions;
     invoiceItemsTableData: InvoiceItemsTableData;
@@ -201,7 +201,7 @@ Same as `InvoiceValues`, but without a `total` field, since total is being calcu
 
 ### InvoiceTemplate example
 
-```
+```ts
 <InvoiceTemplate
     invoiceItemsTableData={invoiceItemsTableData}
     invoiceItemsTableLabels={invoiceItemsTableLabels}
@@ -209,7 +209,7 @@ Same as `InvoiceValues`, but without a `total` field, since total is being calcu
     localizationOptions={localizationOptions}
     taxesData={taxesData}
     taxesTableLabels={taxesLabels}
-/>
+/>;
 
 const invoiceItemsTableData: InvoiceItemsTableData = [
     {
@@ -261,7 +261,7 @@ const localizationOptions: LocalizationOptions = {
     currency: "EUR",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Document date:",
-    saleDateLabel: "Sale date:",
+    sellDateLabel: "Sell date:",
     dueDateLabel: "Due date:",
     paymentMethodLabel: "Payment method:",
     sellerLabel: "Seller",
@@ -270,9 +270,9 @@ const localizationOptions: LocalizationOptions = {
 };
 
 const invoiceValues: InvoiceTemplateValues = {
-    invoiceName: "Invoice 123/2020",
+    invoiceTitle: "Invoice 123/2020",
     documentDate: new Date(),
-    saleDate: new Date(),
+    sellDate: new Date(),
     dueDate: new Date(),
     paymentMethod: "cash",
     seller: "name",

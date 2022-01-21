@@ -75,7 +75,7 @@ const localizationOptions: LocalizationOptions = {
     currency: "EUR",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Data wystawienia:",
-    saleDateLabel: "Data sprzedaży:",
+    sellDateLabel: "Data sprzedaży:",
     dueDateLabel: "Termin płatności:",
     paymentMethodLabel: "Metoda płatności:",
     sellerLabel: "Sprzedawca",
@@ -84,9 +84,9 @@ const localizationOptions: LocalizationOptions = {
 };
 
 const invoiceValues: InvoiceTemplateValues = {
-    invoiceName: "Faktura nr FV 1/2055",
+    invoiceTitle: "Faktura nr FV 1/2055",
     documentDate: new Date(),
-    saleDate: new Date(),
+    sellDate: new Date(),
     dueDate: new Date(),
     paymentMethod: "przelew",
     seller: (

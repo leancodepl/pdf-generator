@@ -15,7 +15,7 @@ export type LocalizationOptions = {
     currency: string;
     dateFormat: string;
     documentDateLabel: string;
-    saleDateLabel: string;
+    sellDateLabel: string;
     dueDateLabel: string;
     paymentMethodLabel: string;
     sellerLabel: string;
@@ -25,9 +25,9 @@ export type LocalizationOptions = {
 
 export type InvoiceValues = {
     logo?: ReactNode;
-    invoiceName: ReactNode;
+    invoiceTitle: ReactNode;
     documentDate: Date;
-    saleDate: Date;
+    sellDate: Date;
     dueDate: Date;
     paymentMethod: ReactNode;
     seller: ReactNode;
@@ -46,23 +46,23 @@ export const InvoiceBase: FunctionComponent<InvoiceBaseProps> = ({
     localizationOptions: {
         dateFormat,
         documentDateLabel,
-        saleDateLabel,
+        sellDateLabel,
         dueDateLabel,
         paymentMethodLabel,
         sellerLabel,
         buyerLabel,
         totalLabel,
     },
-    invoiceValues: { logo, invoiceName, documentDate, saleDate, dueDate, paymentMethod, seller, buyer, total },
+    invoiceValues: { logo, invoiceTitle, documentDate, sellDate, dueDate, paymentMethod, seller, buyer, total },
     invoiceItemsTable,
     taxesTable,
 }) => (
     <Root>
         <LogoWrapper>{logo}</LogoWrapper>
         <TitleWrapper>
-            <Name>{invoiceName}</Name>
+            <Name>{invoiceTitle}</Name>
             <DocumentDate label={documentDateLabel} orientation="horizontal" value={format(documentDate, dateFormat)} />
-            <SaleDate label={saleDateLabel} orientation="horizontal" value={format(saleDate, dateFormat)} />
+            <SellDate label={sellDateLabel} orientation="horizontal" value={format(sellDate, dateFormat)} />
             <DueDate label={dueDateLabel} orientation="horizontal" value={format(dueDate, dateFormat)} />
             <PaymentMethod label={paymentMethodLabel} orientation="horizontal" value={paymentMethod} />
         </TitleWrapper>
@@ -121,7 +121,7 @@ const TitleWrapper = styled.div`
     display: grid;
     grid:
         "name name"
-        "documentDate saleDate"
+        "documentDate sellDate"
         "dueDate payment" / 1fr 1fr;
     column-gap: 15pt;
     row-gap: 12pt;
@@ -141,8 +141,8 @@ const DocumentDate = styled(LabeledField)`
     grid-area: documentDate;
 `;
 
-const SaleDate = styled(LabeledField)`
-    grid-area: saleDate;
+const SellDate = styled(LabeledField)`
+    grid-area: sellDate;
 `;
 
 const DueDate = styled(LabeledField)`
