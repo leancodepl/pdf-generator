@@ -2,7 +2,7 @@ import { InvoiceItemsTableData, InvoiceItemsTableLabels, LocalizationOptions, Ta
 import { useInvoiceTemplate } from "./useInvoiceTemplate";
 
 const totalString = "€5,055.00";
-const taxValueString = "690,00 zł";
+const taxValueString = "690,00\xa0zł";
 const netValueString = "￥2,000.00";
 
 describe("useInvoiceTemplate", () => {
@@ -33,9 +33,7 @@ describe("useInvoiceTemplate", () => {
             taxesTableLabels,
         });
 
-        expect(Buffer.from(data[data.length - 1]["taxValue"], "base64").toString("base64")).toEqual(
-            Buffer.from(taxValueString, "base64").toString("base64"),
-        );
+        expect(data[data.length - 1]["taxValue"]).toEqual(taxValueString);
     });
 
     it("should calculate correct netValue", () => {
