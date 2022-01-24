@@ -1,19 +1,19 @@
-import React = require("react");
+import { render } from "@testing-library/react";
+import { InvoiceTemplate } from ".";
 import {
-    InvoiceTemplate,
-    LocalizationOptions,
     InvoiceItemsTableData,
+    InvoiceItemsTableLabels,
+    InvoiceTemplateValues,
+    LocalizationOptions,
     TaxesData,
     TaxesTableLabels,
-    InvoiceTemplateValues,
-    InvoiceItemsTableLabels,
-} from "@leancodepl/invoice-template";
-import { Injectable } from "@nestjs/common";
+} from "..";
 
-@Injectable()
-export class InvoiceTemplateService {
-    getComponent() {
-        return (
+describe("InvoiceTemplate", () => {
+    let component: HTMLElement;
+
+    beforeAll(() => {
+        component = render(
             <InvoiceTemplate
                 invoiceItemsTableData={invoiceItemsTableData}
                 invoiceItemsTableLabels={invoiceItemsTableLabels}
@@ -21,30 +21,39 @@ export class InvoiceTemplateService {
                 localizationOptions={localizationOptions}
                 taxesData={taxesData}
                 taxesTableLabels={taxesLabels}
-            />
-        );
-    }
-}
+            />,
+        ).baseElement as HTMLElement;
+    });
+
+    it("should render a component without errors", () => {
+        expect(component).toBeTruthy();
+    });
+});
 
 const invoiceItemsTableData: InvoiceItemsTableData = [
     {
         name: "name1",
         count: 10,
-        priceEach: 100.0,
-        taxKey: "vat1",
+        priceEach: 150.0,
+        taxKey: "vat",
     },
     {
         name: "name2",
         count: 10,
+        priceEach: 200.0,
+        taxKey: "vat",
+    },
+    {
+        name: "name3",
+        count: 5,
         priceEach: 100.0,
-        taxKey: "vat3",
+        taxKey: "vat2",
     },
 ];
 
 const taxesData: TaxesData = {
-    vat1: 23,
-    vat2: 5,
-    vat3: 10,
+    vat: 23,
+    vat2: 50,
 };
 
 const invoiceItemsTableLabels: InvoiceItemsTableLabels = {
@@ -67,8 +76,8 @@ const taxesLabels: TaxesTableLabels = {
 };
 
 const localizationOptions: LocalizationOptions = {
-    locale: "ja-JP",
-    currency: "JPY",
+    locale: "en-EN",
+    currency: "EUR",
     dateFormat: "yyyy-MM-d",
     documentDateLabel: "Data wystawienia:",
     sellDateLabel: "Data sprzedaży:",

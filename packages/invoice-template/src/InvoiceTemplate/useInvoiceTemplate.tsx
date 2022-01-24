@@ -2,7 +2,7 @@ import { InvoiceItemsTableData, InvoiceItemsTableLabels, TaxesData, TaxesTableLa
 import { LocalizationOptions, TableDataProp } from "..";
 import { TableColumns, TableData } from "../common/Table";
 
-type UseInvoiceTemplateArgs = {
+export type UseInvoiceTemplateArgs = {
     localizationOptions: LocalizationOptions;
     invoiceItemsTableData: InvoiceItemsTableData;
     taxesData: TaxesData;
@@ -10,7 +10,7 @@ type UseInvoiceTemplateArgs = {
     taxesTableLabels: TaxesTableLabels;
 };
 
-type UseInvoiceTemplateReturn = {
+export type UseInvoiceTemplateReturn = {
     invoiceItemsTable: TableDataProp;
     taxesTable: TableDataProp;
     total: string;
