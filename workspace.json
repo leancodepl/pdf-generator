@@ -2,6 +2,50 @@
   "version": 2,
   "projects": {
     "invoice-template": "packages/invoice-template",
+    "pdf-generator-api-and-auth": {
+      "root": "packages/pdf-generator-api-and-auth",
+      "sourceRoot": "packages/pdf-generator-api-and-auth/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "packages/pdf-generator-api-and-auth/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/packages/pdf-generator-api-and-auth"
+          ],
+          "options": {
+            "jestConfig": "packages/pdf-generator-api-and-auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/packages/pdf-generator-api-and-auth",
+            "tsConfig": "packages/pdf-generator-api-and-auth/tsconfig.lib.json",
+            "packageJson": "packages/pdf-generator-api-and-auth/package.json",
+            "main": "packages/pdf-generator-api-and-auth/src/index.ts",
+            "assets": [
+              "packages/pdf-generator-api-and-auth/*.md"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "pdf-renderer": "packages/pdf-renderer",
     "sample-project": "packages/sample-project",
     "workspace": {
