@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
+import { VerifyOptions } from "jsonwebtoken";
 import { passportJwtSecret } from "jwks-rsa";
 import { ExtractJwt, Strategy, StrategyOptions, VerifyCallbackWithRequest } from "passport-jwt";
-import { JwtStrategyConfig } from "./jwtStrategyConfig.service";
-
-export const JwtStrategyToken = Symbol("JwtStrategy");
 
 const tokenExtractor = ExtractJwt.fromAuthHeaderAsBearerToken();
+
+export type JwtStrategyConfig = {
+    jwksUri: string;
+    jsonWebTokenOptions?: VerifyOptions;
+};
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

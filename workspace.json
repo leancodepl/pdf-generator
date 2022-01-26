@@ -1,51 +1,41 @@
 {
   "version": 2,
   "projects": {
-    "invoice-template": "packages/invoice-template",
-    "pdf-generator-api-and-auth": {
-      "root": "packages/pdf-generator-api-and-auth",
-      "sourceRoot": "packages/pdf-generator-api-and-auth/src",
+    "api-proxy": {
+      "root": "packages/api-proxy",
+      "sourceRoot": "packages/api-proxy/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "packages/pdf-generator-api-and-auth/**/*.ts"
-            ]
+            "lintFilePatterns": ["packages/api-proxy/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/packages/pdf-generator-api-and-auth"
-          ],
+          "outputs": ["coverage/packages/api-proxy"],
           "options": {
-            "jestConfig": "packages/pdf-generator-api-and-auth/jest.config.js",
+            "jestConfig": "packages/api-proxy/jest.config.js",
             "passWithNoTests": true
           }
         },
         "build": {
           "executor": "@nrwl/node:package",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/packages/pdf-generator-api-and-auth",
-            "tsConfig": "packages/pdf-generator-api-and-auth/tsconfig.lib.json",
-            "packageJson": "packages/pdf-generator-api-and-auth/package.json",
-            "main": "packages/pdf-generator-api-and-auth/src/index.ts",
-            "assets": [
-              "packages/pdf-generator-api-and-auth/*.md"
-            ]
+            "outputPath": "dist/packages/api-proxy",
+            "tsConfig": "packages/api-proxy/tsconfig.lib.json",
+            "packageJson": "packages/api-proxy/package.json",
+            "main": "packages/api-proxy/src/index.ts",
+            "assets": ["packages/api-proxy/*.md"]
           }
         }
       },
       "tags": []
     },
+    "invoice-template": "packages/invoice-template",
     "pdf-renderer": "packages/pdf-renderer",
     "sample-project": "packages/sample-project",
     "workspace": {
