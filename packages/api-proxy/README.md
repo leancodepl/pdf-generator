@@ -10,7 +10,7 @@ based api.
 ```ts
 import { VerifyOptions } from "jsonwebtoken";
 
-static register({ isGlobal = false, jwtStrategyConfig }: ApiProxySyncConfiguration): DynamicModule
+ApiProxy.register({ isGlobal, jwtStrategyConfig }: ApiProxySyncConfiguration): DynamicModule
 
 export type ApiProxySyncConfiguration = {
     isGlobal?: boolean;
@@ -34,6 +34,28 @@ Uri of your auth jwks.
 ##### jsonWebTokenOptions
 
 `VerifyOptions` is a type imported from `jsonwebtoken` package.
+
+```ts
+export interface VerifyOptions {
+    algorithms?: Algorithm[] | undefined;
+    audience?: string | RegExp | Array<string | RegExp> | undefined;
+    clockTimestamp?: number | undefined;
+    clockTolerance?: number | undefined;
+    /** return an object with the decoded `{ payload, header, signature }` instead of only the usual content of the payload. */
+    complete?: boolean | undefined;
+    issuer?: string | string[] | undefined;
+    ignoreExpiration?: boolean | undefined;
+    ignoreNotBefore?: boolean | undefined;
+    jwtid?: string | undefined;
+    /**
+     * If you want to check `nonce` claim, provide a string value here.
+     * It is used on Open ID for the ID Tokens. ([Open ID implementation notes](https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes))
+     */
+    nonce?: string | undefined;
+    subject?: string | undefined;
+    maxAge?: string | number | undefined;
+}
+```
 
 ### register example
 
@@ -59,7 +81,7 @@ export class AppModule {}
 ### registerAsync
 
 ```ts
-static registerAsync(options: ApiProxyAsyncConfiguration): DynamicModule
+ApiProxy.registerAsync(options: ApiProxyAsyncConfiguration): DynamicModule
 
 export type ApiProxyConfiguration = {
     jwtStrategyConfig: JwtStrategyConfig;
@@ -86,26 +108,44 @@ useExisting, useClass and useFactory is specified, method will throw a `NotFound
 ### registerAsync example
 
 ```ts
-const apiProxyConfig: ApiProxyConfiguration = {
-    jwtStrategyConfig: {
-        jwksUri: "https://localhost:3333/auth/.well-known/openid-configuration/jwks",
-        jsonWebTokenOptions: {
-            audience: "internal_api",
-        },
-    },
-};
-
 const apiProxyAsyncConfig: ApiProxyAsyncConfiguration = {
     isGlobal: false,
-    useFactory: () => apiProxyConfig,
+    imports: [ConfigModule],
+    useFactory: (configService: ConfigService) => ({
+        jwtStrategyConfig: {
+            jwksUri: configService.get("JWKS_URI") ?? "",
+            jsonWebTokenOptions: {
+                audience: "internal_api",
+            },
+        },
+    }),
+    inject: [ConfigService],
 };
 
 @Module({
-    imports: [ApiProxyModule.registerAsync(apiProxyAsyncConfig), PassportModule.register({ defaultStrategy: "jwt" })],
+    imports: [
+        ConfigModule.forRoot(),
+        ApiProxyModule.registerAsync(apiProxyAsyncConfig),
+        PassportModule.register({ defaultStrategy: "jwt" }),
+    ],
     controllers: [],
     providers: [],
 })
 export class AppModule {}
+```
+
+### UseJwtGuard decorator
+
+For the authorization to work, you have to use the `UseJwtGuard` decorator on your controller.
+
+```ts
+import { UseJwtGuard } from "@leancodepl/api-proxy";
+
+@UseJwtGuard()
+@Controller()
+export class AppController {
+    constructor() {}
+}
 ```
 
 ### Providing a CqrsClient example

@@ -11,8 +11,8 @@ export type EndpointGetter = (type: string) => string;
 @Injectable()
 export class Api implements CqrsClient {
     constructor(
-        private httpService: HttpService,
-        private request: Request,
+        private readonly httpService: HttpService,
+        private readonly request: Request,
         private readonly getApiEndpoint: EndpointGetter,
     ) {}
 

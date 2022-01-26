@@ -1,0 +1,34 @@
+{
+  "root": "packages/api-proxy",
+  "sourceRoot": "packages/api-proxy/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/api-proxy/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/api-proxy"],
+      "options": {
+        "jestConfig": "packages/api-proxy/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/api-proxy",
+        "tsConfig": "packages/api-proxy/tsconfig.lib.json",
+        "packageJson": "packages/api-proxy/package.json",
+        "main": "packages/api-proxy/src/index.ts",
+        "assets": ["packages/api-proxy/*.md"]
+      }
+    }
+  },
+  "tags": []
+}

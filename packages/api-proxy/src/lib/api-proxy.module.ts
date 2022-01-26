@@ -2,7 +2,6 @@ import { CqrsClientFactory } from "@leancodepl/api-proxy";
 import { HttpModule } from "@nestjs/axios";
 import { DynamicModule, Module, ModuleMetadata, NotFoundException, Provider, Type } from "@nestjs/common";
 import { JwtStrategy, JwtStrategyConfig } from "./jwt.strategy";
-import { UseJwtGuard } from "./useJwtGuard";
 
 export const InstanceToken = Symbol("Instance");
 export const ApiAndAuthConfigurationToken = Symbol("ApiAndAuthConfiguration");
@@ -28,7 +27,6 @@ export interface ApiProxyAsyncConfiguration extends Pick<ModuleMetadata, "import
     isGlobal?: boolean;
 }
 
-@UseJwtGuard()
 @Module({})
 export class ApiProxyModule {
     static register({ isGlobal, jwtStrategyConfig }: ApiProxySyncConfiguration): DynamicModule {

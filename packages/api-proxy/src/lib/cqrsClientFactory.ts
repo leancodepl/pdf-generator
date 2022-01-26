@@ -6,7 +6,7 @@ import type { Request } from "express";
 
 @Injectable()
 export class CqrsClientFactory {
-    constructor(private httpService: HttpService, @Inject(REQUEST) private request: Request) {}
+    constructor(private readonly httpService: HttpService, @Inject(REQUEST) private readonly request: Request) {}
 
     create(getApiEndpoint: EndpointGetter) {
         return new Api(this.httpService, this.request, getApiEndpoint);

@@ -1,6 +1,7 @@
-import { ApiProxyConfiguration, ApiProxyModule } from "@leancodepl/api-proxy";
+import { ApiProxyModule } from "@leancodepl/api-proxy";
 import { PdfRendererModule } from "@leancodepl/pdf-renderer";
 import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
 import { AppController } from "./app.controller";
 import { BaseInvoiceService } from "./components-services/baseInvoice.service";
@@ -11,21 +12,24 @@ import { SampleComponentService } from "./components-services/sampleComponent.se
 import { fontsConfiguration } from "./fonts";
 import { QueryController } from "./query.controller";
 
-const apiAndAuthConfig: ApiProxyConfiguration = {
-    jwtStrategyConfig: {
-        jwksUri: "https://api.prospector.test.lncd.pl/auth/.well-known/openid-configuration/jwks",
-        jsonWebTokenOptions: {
-            audience: "internal_api",
-        },
-    },
-};
-
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            // envFilePath: ".env",
+            ignoreEnvVars: true,
+        }),
         PdfRendererModule.register({ fontsConfiguration }),
         ApiProxyModule.registerAsync({
-            isGlobal: true,
-            useFactory: () => apiAndAuthConfig,
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                jwtStrategyConfig: {
+                    jwksUri: configService.get("JWKS_URI") ?? "",
+                    jsonWebTokenOptions: {
+                        audience: "internal_api",
+                    },
+                },
+            }),
+            inject: [ConfigService],
         }),
         PassportModule.register({ defaultStrategy: "jwt" }),
     ],
