@@ -1,5 +1,4 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { PuppeteerNodeLaunchOptions } from "puppeteer";
 import { Cluster } from "puppeteer-cluster";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 
@@ -13,8 +12,7 @@ export class BrowserPool implements OnModuleInit, OnModuleDestroy {
             maxConcurrency: 2,
             puppeteerOptions: {
                 args: ["--no-sandbox"],
-            } as PuppeteerNodeLaunchOptions,
-            // TODO: puppeteer-cluster has broken types
+            },
         });
     }
 

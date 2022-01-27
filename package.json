@@ -1,6 +1,6 @@
 {
   "name": "@leancodepl/pdf",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
@@ -18,7 +18,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "puppeteer": "^9.0.0",
-    "puppeteer-cluster": ">=0.22.0",
+    "puppeteer-cluster": "^0.23.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-is": "^17.0.2",
@@ -29,7 +29,7 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@jscutlery/semver": "2.17.5",
+    "@jscutlery/semver": "2.17.6",
     "@leancode/linting": "6.2.0-alpha.11",
     "@nestjs/schematics": "8.0.5",
     "@nestjs/testing": "8.2.6",

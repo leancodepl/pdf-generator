@@ -1,4 +1,25 @@
 {
   "name": "@leancodepl/invoice-template",
-  "version": "0.0.1"
+  "description": "PDF Generator invoice template with basic configuration",
+  "version": "0.2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leancodepl/pdf-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leancodepl/pdf-generator/issues"
+  },
+  "homepage": "https://github.com/leancodepl/pdf-generator/tree/main/packages/invoice-template#readme",
+  "author": "LeanCode",
+  "license": "Apache-2.0",
+  "keywords": [
+    "LeanCode",
+    "pdf",
+    "typescript",
+    "strongly",
+    "typed",
+    "puppeteer",
+    "react",
+    "invoice"
+  ]
 }
