@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "api-proxy": "packages/api-proxy",
     "invoice-template": "packages/invoice-template",
     "pdf-renderer": "packages/pdf-renderer",
     "sample-project": "packages/sample-project",

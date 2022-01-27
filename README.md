@@ -2,11 +2,25 @@
 
 This project was generated using [Nx](https://nx.dev).
 
-## Build
+### [pdf-renderer](packages/pdf-renderer)
 
-`nx build [package-name]` The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a
-production build.
+NestJS module used for creating PDF files out of react components.
 
-## Linting
+### [invoice-template](packages/invoice-template)
 
-`nx lint [package-name]`
+Invoice templates created with react, can be used with pdf-renderer.
+
+### [api-proxy](packages/api-proxy)
+
+Used for authentication and communication with a [contractsgenerator](https://github.com/leancodepl/contractsgenerator)
+based api.
+
+### Dockerfile
+
+At the top of your own Dockerfile add the following line.
+
+`FROM ghcr.io/leancodepl/pdf-generator:[version]`
+
+You can also easily get the current version, by using `latest`.
+
+`FROM ghcr.io/leancodepl/pdf-generator:latest`

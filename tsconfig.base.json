@@ -17,7 +17,9 @@
     "baseUrl": ".",
     "jsx": "react",
     "paths": {
+      "@leancodepl/api-proxy": ["packages/api-proxy/src/index.ts"],
       "@leancodepl/invoice-template": ["packages/invoice-template/src/index.ts"],
+      "@leancodepl/pdf-generator-api-and-auth": ["packages/pdf-generator-api-and-auth/src/index.ts"],
       "@leancodepl/pdf-renderer": ["packages/pdf-renderer/src/index.ts"]
     }
   },

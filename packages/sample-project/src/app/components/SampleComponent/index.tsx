@@ -1,7 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
 
-const SampleComponent: React.FunctionComponent = () => <BlueDiv>sample pdf generator component</BlueDiv>;
+const SampleComponent: React.FunctionComponent<{ testString?: string }> = ({ testString }) => (
+    <>
+        <BlueDiv>sample pdf generator component</BlueDiv>
+        {testString}
+    </>
+);
 
 const BlueDiv = styled.div`
     background: lightskyblue;
