@@ -14,8 +14,9 @@ yarn add @leancodepl/pdf-renderer
 For the pdf-renderer to run correctly, it is required to use Dockerfile delivered with a package, which installs all of
 the dependencies needed by Puppeteer.
 
-If you want to provide custom fonts, you need those in the `.woff` format, which is the only one supported at the
-moment.
+You should provide your own fonts, because using one of the basic ones may result in inconsistent behavior across
+different operating systems. You need those in the `.woff` format, which is the only one supported at the moment. If not
+provided, the font will be set to `chromium`'s default.
 
 Keep in mind, that everything you pass into the renderer, **has to be synchronous**, for it to work as expected. Any
 data component needs, should be provided beforehand. Also, calling some hooks inside a component may not work as
