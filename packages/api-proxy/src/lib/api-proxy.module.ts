@@ -1,6 +1,6 @@
-import { CqrsClientFactory } from "@leancodepl/api-proxy";
 import { HttpModule } from "@nestjs/axios";
 import { DynamicModule, Module, ModuleMetadata, NotFoundException, Provider, Type } from "@nestjs/common";
+import { CqrsClientFactory } from "./cqrsClientFactory";
 import { JwtStrategy, JwtStrategyConfig } from "./jwt.strategy";
 
 export const InstanceToken = Symbol("Instance");
