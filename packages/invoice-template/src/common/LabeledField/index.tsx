@@ -10,10 +10,17 @@ type LabeledFieldProps = {
     label: ReactNode;
     value: ReactNode;
     marginTop?: MarginTop;
+    disableAutoLeftMargin?: boolean;
 };
 
-const LabeledField: FunctionComponent<LabeledFieldProps> = ({ orientation, label, value, marginTop }) => (
-    <Root marginTop={marginTop} orientation={orientation}>
+const LabeledField: FunctionComponent<LabeledFieldProps> = ({
+    orientation,
+    label,
+    value,
+    marginTop,
+    disableAutoLeftMargin = false,
+}) => (
+    <Root disableAutoLeftMargin={disableAutoLeftMargin} marginTop={marginTop} orientation={orientation}>
         <span>{label}</span>
         <Value>{value}</Value>
     </Root>
@@ -22,6 +29,7 @@ const LabeledField: FunctionComponent<LabeledFieldProps> = ({ orientation, label
 type RootProps = {
     marginTop?: MarginTop;
     orientation: Orientation;
+    disableAutoLeftMargin: boolean;
 };
 
 const marginTopToPt = (marginTop: MarginTop) => {
@@ -44,8 +52,9 @@ const Root = styled.div<RootProps>`
     ${({ marginTop }) => (marginTop ? `margin: ${marginTopToPt(marginTop)};` : "")}
 
     ${Value} {
-        margin-left: ${({ orientation }) => (orientation === "horizontal" ? "auto" : "0")};
-    }
+        margin-left: ${({ orientation, disableAutoLeftMargin }) =>
+            orientation === "horizontal" ? (disableAutoLeftMargin ? "4pt" : "auto") : "0"};
+    } ;
 `;
 
 export default LabeledField;
