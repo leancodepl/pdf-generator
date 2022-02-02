@@ -332,27 +332,69 @@ export type PolishInvoiceTotal = {
 
 #### Working with [pdf-renderer](/packages/pdf-renderer)
 
-The template delivers a `polishInvoiceFontsConfig` object, which makes fonts configuration easier.
+There are two options you can choose from, depending on the effect you want to achieve.
 
-You have to provide your fonts into PdfRendererModule's register method: regular and bold versions. You should use the
-`moduleConfig` method of `polishInvoiceFontsConfig` for this purpose. It's suggested to use Open Sans, which can be
-found in the Sample Project. You can pass either a `string` with the path or a `Buffer`.
+When passing the fonts it's suggested to use Open Sans, which can be found in the Sample Project. You can pass either a
+`string` with the path or a `Buffer`.
+
+##### Without pdf-renderer
+
+This option should be used, if the only template that you will be using is the `PolishInvoiceTemplate`.
+
+At first register a `PolishInvoiceModule`, and and pass arguments for the renderer.
 
 ```ts
-PdfRendererModule.register({
-    fontsConfiguration: polishInvoiceFontsConfig.moduleConfig({
-        regular: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
-        bold: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
-    }),
+PolishInvoiceModule.register({
+    rendererConfig: {
+        isGlobal: true,
+        regularFont: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
+        boldFont: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
+    },
 }),
 ```
 
-To make the fonts available for the component, pass those into the renderer from `polishInvoiceFontsConfig`'s
-`pdfRendererConfig` field.
+Then you will be able to inject `PolishInvoiceService` into your own service and render a component by passing its props
+to `renderInvoice` method.
+
+```ts
+@Injectable()
+export class PolishInvoiceTemplateService {
+    constructor(private readonly polishInvoiceService: PolishInvoiceService) {}
+
+    getRender() {
+        return this.polishInvoiceService.renderInvoice(props);
+    }
+
+    async getStream() {
+        return await this.getRender().asStream();
+    }
+}
+```
+
+##### With pdf-renderer
+
+If you want to have a possibility to add more custom fonts, this is the right option.
+
+You have to provide your fonts for `PolishInvoiceTemplate`: regular and bold versions. You should use the `moduleConfig`
+function for this purpose.
+
+```ts
+PdfRendererModule.register({
+    fontsConfiguration: {
+        ...customFontsConfiguration,
+        ...moduleConfig({
+            regular: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
+            bold: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
+        }),
+    },
+}),
+```
+
+To make the fonts available for the component, pass those into the renderer from `pdfRendererConfig`.
 
 ```ts
 const stream = await this.pdfRenderer
-    .generatePdf(this.polishInvoiceTemplateService.getComponent(), polishInvoiceFontsConfig.pdfRendererConfig)
+    .generatePdf(this.polishInvoiceTemplateService.getComponent(), pdfRendererConfig)
     .asStream();
 ```
 

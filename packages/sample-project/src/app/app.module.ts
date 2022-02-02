@@ -1,6 +1,5 @@
 import { ApiProxyModule } from "@leancodepl/api-proxy";
-import { polishInvoiceFontsConfig } from "@leancodepl/invoice-template";
-import { PdfRendererModule } from "@leancodepl/pdf-renderer";
+import { PolishInvoiceModule } from "@leancodepl/invoice-template";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
@@ -20,11 +19,12 @@ import { QueryController } from "./query.controller";
         ConfigModule.forRoot({
             ignoreEnvVars: true,
         }),
-        PdfRendererModule.register({
-            fontsConfiguration: polishInvoiceFontsConfig.moduleConfig({
-                regular: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
-                bold: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
-            }),
+        PolishInvoiceModule.register({
+            rendererConfig: {
+                isGlobal: true,
+                regularFont: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
+                boldFont: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
+            },
         }),
         ApiProxyModule.registerAsync({
             imports: [ConfigModule],

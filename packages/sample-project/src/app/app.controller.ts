@@ -1,4 +1,3 @@
-import { polishInvoiceFontsConfig } from "@leancodepl/invoice-template";
 import { PdfRenderer } from "@leancodepl/pdf-renderer";
 import { Controller, Get, Res } from "@nestjs/common";
 import type { Response } from "express";
@@ -56,9 +55,7 @@ export class AppController {
 
     @Get("polish-invoice")
     async polishInvoice(@Res() res: Response) {
-        const stream = await this.pdfRenderer
-            .generatePdf(this.polishInvoiceTemplateService.getComponent(), polishInvoiceFontsConfig.pdfRendererConfig)
-            .asStream();
+        const stream = await this.polishInvoiceTemplateService.getRender().asStream();
 
         const filename = "polish-invoice.pdf";
 

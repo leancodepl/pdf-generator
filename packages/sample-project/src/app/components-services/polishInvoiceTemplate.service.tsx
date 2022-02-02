@@ -1,9 +1,9 @@
 import React = require("react");
 import {
     PolishInvoiceHeader,
+    PolishInvoiceService,
     PolishInvoiceTableItem,
     PolishInvoiceTax,
-    PolishInvoiceTemplate,
     PolishInvoiceTotal,
     SellerBuyerData,
 } from "@leancodepl/invoice-template";
@@ -14,19 +14,19 @@ import styled from "styled-components";
 
 @Injectable()
 export class PolishInvoiceTemplateService {
-    getComponent() {
+    constructor(private readonly polishInvoiceService: PolishInvoiceService) {}
+
+    getRender() {
         const logo = fs.readFileSync(path.join(__dirname, "assets", "lncd-logo.png"));
 
-        return (
-            <PolishInvoiceTemplate
-                buyer={buyer}
-                header={{ ...header, logo: <Logo src={`data:image/png;base64,${logo.toString("base64")}`} /> }}
-                itemsTable={itemsTable}
-                seller={seller}
-                taxesTable={taxesTable}
-                total={total}
-            />
-        );
+        return this.polishInvoiceService.renderInvoice({
+            header: { ...header, logo: <Logo src={`data:image/png;base64,${logo.toString("base64")}`} /> },
+            seller,
+            buyer,
+            itemsTable,
+            taxesTable,
+            total,
+        });
     }
 }
 
