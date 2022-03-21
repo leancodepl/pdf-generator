@@ -15,9 +15,10 @@ export type TableProps = {
     columns: TableColumns;
     data: TableData;
     className?: string;
+    boldLabels?: boolean;
 };
 
-const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
+const Table: FunctionComponent<TableProps> = ({ columns, data, className, boldLabels }) => (
     <table className={className}>
         <colgroup>
             {columns.map((column, index) => (
@@ -28,7 +29,7 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className }) => (
             <tr>
                 {columns.map(column => (
                     <Th key={column.dataIndex} alignment="center">
-                        {column.title}
+                        {boldLabels ? <b>{column.title}</b> : column.title}
                     </Th>
                 ))}
             </tr>
@@ -56,6 +57,10 @@ const Th = styled.th<TableCellProps>`
     font-weight: 400;
 
     ${({ alignment }) => (alignment ? `text-align: ${alignment};` : "")}
+
+    b {
+        border: 0 !important;
+    }
 `;
 
 const Td = styled.td<TableCellProps>`

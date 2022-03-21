@@ -4,7 +4,7 @@ import path = require("path");
 export const OpenSansRegular = Symbol("OpenSansRegular");
 export const OpenSansBold = Symbol("OpenSansBold");
 
-const fontsPath = path.join(__dirname, "assets", "fonts", "OpenSans");
+export const fontsPath = path.join(__dirname, "assets", "fonts", "OpenSans");
 
 export const fontsConfiguration: FontsConfiguration = {
     [OpenSansRegular]: {

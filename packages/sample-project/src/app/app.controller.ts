@@ -3,15 +3,18 @@ import { Controller, Get, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { BaseInvoiceService } from "./components-services/baseInvoice.service";
 import { InvoiceTemplateService } from "./components-services/invoiceTemplate.service";
+import { PolishInvoiceTemplateService } from "./components-services/polishInvoiceTemplate.service";
 import { SampleComponentService } from "./components-services/sampleComponent.service";
 
 @Controller("test")
 export class AppController {
+    // eslint-disable-next-line max-params
     constructor(
         private readonly pdfRenderer: PdfRenderer,
         private readonly sampleComponentService: SampleComponentService,
         private readonly baseInvoiceService: BaseInvoiceService,
         private readonly invoiceTemplateService: InvoiceTemplateService,
+        private readonly polishInvoiceTemplateService: PolishInvoiceTemplateService,
     ) {}
 
     @Get("pdf")
@@ -43,6 +46,18 @@ export class AppController {
         const stream = await this.pdfRenderer.generatePdf(this.invoiceTemplateService.getComponent(), []).asStream();
 
         const filename = "invoice-template.pdf";
+
+        res.header("Content-Type", "application/pdf");
+        res.header("Content-Disposition", `attachment; filename="${filename}"`);
+
+        stream.pipe(res);
+    }
+
+    @Get("polish-invoice")
+    async polishInvoice(@Res() res: Response) {
+        const stream = await this.polishInvoiceTemplateService.getRender().asStream();
+
+        const filename = "polish-invoice.pdf";
 
         res.header("Content-Type", "application/pdf");
         res.header("Content-Disposition", `attachment; filename="${filename}"`);
