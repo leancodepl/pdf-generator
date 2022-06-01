@@ -19,13 +19,14 @@
       }
     },
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/pdf-renderer",
         "tsConfig": "packages/pdf-renderer/tsconfig.lib.json",
         "packageJson": "packages/pdf-renderer/package.json",
-        "main": "packages/pdf-renderer/src/index.ts"
+        "main": "packages/pdf-renderer/src/index.ts",
+        "assets": ["packages/pdf-renderer/*.md"]
       }
     },
     "publish": {
