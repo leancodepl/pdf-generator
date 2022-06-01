@@ -1,6 +1,6 @@
 {
   "name": "@leancodepl/pdf",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
@@ -28,7 +28,7 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@jscutlery/semver": "2.17.6",
+    "@jscutlery/semver": "2.24.2",
     "@leancode/linting": "6.2.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
