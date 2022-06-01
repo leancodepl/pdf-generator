@@ -19,14 +19,13 @@
       }
     },
     "build": {
-      "executor": "@nrwl/node:package",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/api-proxy",
         "tsConfig": "packages/api-proxy/tsconfig.lib.json",
         "packageJson": "packages/api-proxy/package.json",
-        "main": "packages/api-proxy/src/index.ts",
-        "assets": ["packages/api-proxy/*.md"]
+        "main": "packages/api-proxy/src/index.ts"
       }
     }
   },
