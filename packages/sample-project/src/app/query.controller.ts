@@ -22,7 +22,7 @@ export class QueryController {
     @Get("query1pdf")
     async query1pdf(@Res() res: Response) {
         const component = await this.query1ComponentService.getComponent();
-        const stream = await this.pdfRenderer.generatePdf(component, []).asStream();
+        const stream = await this.pdfRenderer.generatePdf({ element: component }).asStream();
 
         const filename = "query1.pdf";
 

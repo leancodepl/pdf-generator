@@ -19,7 +19,9 @@ export class AppController {
 
     @Get("pdf")
     async samplePdf(@Res() res: Response) {
-        const stream = await this.pdfRenderer.generatePdf(this.sampleComponentService.getComponent(), []).asStream();
+        const stream = await this.pdfRenderer
+            .generatePdf({ element: this.sampleComponentService.getComponent() })
+            .asStream();
 
         const filename = "test.pdf";
 
@@ -31,7 +33,9 @@ export class AppController {
 
     @Get("base-invoice")
     async baseInvoice(@Res() res: Response) {
-        const stream = await this.pdfRenderer.generatePdf(this.baseInvoiceService.getComponent(), []).asStream();
+        const stream = await this.pdfRenderer
+            .generatePdf({ element: this.baseInvoiceService.getComponent() })
+            .asStream();
 
         const filename = "base-invoice.pdf";
 
@@ -43,7 +47,9 @@ export class AppController {
 
     @Get("invoice-template")
     async invoiceTemplate(@Res() res: Response) {
-        const stream = await this.pdfRenderer.generatePdf(this.invoiceTemplateService.getComponent(), []).asStream();
+        const stream = await this.pdfRenderer
+            .generatePdf({ element: this.invoiceTemplateService.getComponent() })
+            .asStream();
 
         const filename = "invoice-template.pdf";
 
