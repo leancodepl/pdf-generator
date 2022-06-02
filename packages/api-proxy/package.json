@@ -1,7 +1,7 @@
 {
   "name": "@leancodepl/api-proxy",
   "description": "LeanCode contacts generator nest api proxy with auth token forwarder",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leancodepl/pdf-generator.git"
