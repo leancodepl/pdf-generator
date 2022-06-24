@@ -5,22 +5,14 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/invoice-template",
         "tsConfig": "packages/invoice-template/tsconfig.lib.json",
-        "project": "packages/invoice-template/package.json",
-        "entryFile": "packages/invoice-template/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "packages/invoice-template/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "packageJson": "packages/invoice-template/package.json",
+        "main": "packages/invoice-template/src/index.ts",
+        "assets": ["packages/invoice-template/*.md"]
       }
     },
     "lint": {
