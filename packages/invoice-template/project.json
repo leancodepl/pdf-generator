@@ -14,7 +14,6 @@
         "entryFile": "packages/invoice-template/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-        "compiler": "swc",
         "assets": [
           {
             "glob": "packages/invoice-template/README.md",
@@ -37,6 +36,12 @@
       "options": {
         "jestConfig": "packages/invoice-template/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "npm publish dist/packages/invoice-template --access public"
       }
     }
   }
