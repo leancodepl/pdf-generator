@@ -31,8 +31,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super(strategyOptions);
     }
 
-    validate(...[req]: Parameters<VerifyCallbackWithRequest>) {
+    validate(...[req, payload]: Parameters<VerifyCallbackWithRequest>) {
         return {
+            payload,
             token: tokenExtractor(req),
         };
     }
