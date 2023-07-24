@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.7](https://github.com/leancodepl/pdf-generator/compare/v0.3.6...v0.3.7) (2023-07-24)
+
+
+
 ## [0.3.6](https://github.com/leancodepl/pdf-generator/compare/v0.3.5...v0.3.6) (2023-07-24)
 
 
