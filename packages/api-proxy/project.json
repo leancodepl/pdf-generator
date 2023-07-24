@@ -28,6 +28,12 @@
         "main": "packages/api-proxy/src/index.ts",
         "assets": ["packages/api-proxy/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "npm publish dist/packages/api-proxy --access public"
+      }
     }
   },
   "tags": []
