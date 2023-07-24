@@ -5,7 +5,7 @@ module.exports = {
         "\\.(ts|tsx)?$": "babel-jest",
         "^.+\\.[tj]sx?$": ["@swc/jest", { jsc: { transform: { react: { runtime: "automatic" } } } }],
     },
-    resolver: "@nrwl/jest/plugins/resolver",
+    resolver: "@nx/jest/plugins/resolver",
     moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
     coverageDirectory: "../../coverage/packages/invoice-template",
 };
