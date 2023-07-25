@@ -1,8 +1,8 @@
-import { Api, EndpointGetter } from "@leancodepl/api-proxy";
 import { HttpService } from "@nestjs/axios";
 import { Inject, Injectable } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 import type { Request } from "express";
+import { Api, EndpointGetter } from "./api.service";
 
 @Injectable()
 export class CqrsClientFactory {

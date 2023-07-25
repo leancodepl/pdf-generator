@@ -1,4 +1,3 @@
-import React = require("react");
 import { InvoiceBase, InvoiceValues, LocalizationOptions, TableDataProp } from "@leancodepl/invoice-template";
 import { Injectable } from "@nestjs/common";
 

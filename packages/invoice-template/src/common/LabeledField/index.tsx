@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ReactNode, FunctionComponent } from "react";
 import styled from "styled-components";
 
@@ -54,7 +53,7 @@ const Root = styled.div<RootProps>`
     ${Value} {
         margin-left: ${({ orientation, disableAutoLeftMargin }) =>
             orientation === "horizontal" ? (disableAutoLeftMargin ? "4pt" : "auto") : "0"};
-    } ;
+    }
 `;
 
 export default LabeledField;

@@ -20,9 +20,13 @@ export class PdfGenerator {
         page: Page,
         { html, headerHtml, footerHtml, format, displayHeaderFooter }: GeneratePageParams,
     ): Promise<PDFOptions> {
-        await page.setContent(html);
+        await page.setContent(html, {
+            timeout: 60000,
+            waitUntil: ["load", "domcontentloaded"],
+        });
 
         return {
+            timeout: 60000,
             format,
             margin: {
                 top: 0,

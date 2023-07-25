@@ -5,7 +5,7 @@ module.exports = {
     testEnvironment: "node",
     transform: {
         "^.+\\.[tj]s$": [
-            "ts-jest",
+            "@swc/jest",
             {
                 tsconfig: "<rootDir>/tsconfig.spec.json",
             },

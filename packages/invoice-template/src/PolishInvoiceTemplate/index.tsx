@@ -1,11 +1,10 @@
-import * as React from "react";
 import { ReactNode, FunctionComponent } from "react";
 import { format } from "date-fns";
 import styled from "styled-components";
-import LabeledField from "../common/LabeledField";
-import Table from "../common/Table";
 import { SellerBuyerComponent, SellerBuyerData } from "./SellerBuyerComponent";
 import { usePolishInvoiceTemplate } from "./usePolishInvoiceTemplate";
+import LabeledField from "../common/LabeledField";
+import Table from "../common/Table";
 
 const invoiceItemsTableClassName = "main-table";
 const taxesTableClassName = "taxes-table";

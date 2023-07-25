@@ -1,15 +1,14 @@
+const fs = require("fs");
+
+const config = JSON.parse(fs.readFileSync(`${__dirname}/.swcrc`, "utf-8"));
+
 module.exports = {
     displayName: "pdf-renderer",
     preset: "../../jest.preset.js",
     globals: {},
     testEnvironment: "node",
     transform: {
-        "^.+\\.[tj]s$": [
-            "ts-jest",
-            {
-                tsconfig: "<rootDir>/tsconfig.spec.json",
-            },
-        ],
+        "^.+\\.[tj]s$": ["@swc/jest", config],
     },
     moduleFileExtensions: ["ts", "js", "html"],
     coverageDirectory: "../../coverage/packages/pdf-renderer",
