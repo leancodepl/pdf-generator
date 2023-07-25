@@ -169,7 +169,7 @@ export class CqrsClient1 {
 Into your `Client` function, generated with
 [contractsgenerator-typescript](https://www.npmjs.com/package/@leancodepl/contractsgenerator-typescript), you have to
 pass the instance of `CqrsClient`, which can be created using `cqrsClientFactory.create` method. As args of this method
-you have to pass a function with args `(type: string)`, which will be use for creating endpoint's url.
+you have to pass a function with args `(type: string)`, which will be used for creating endpoint's url.
 
 ```ts
 @Injectable()

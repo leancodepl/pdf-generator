@@ -1,4 +1,3 @@
-import React = require("react");
 import { Injectable } from "@nestjs/common";
 import SampleComponent from "../components/SampleComponent";
 import { CqrsClient1 } from "./CqrsClient1";

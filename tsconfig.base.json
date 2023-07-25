@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "paths": {
       "@leancodepl/api-proxy": ["packages/api-proxy/src/index.ts"],
       "@leancodepl/invoice-template": ["packages/invoice-template/src/index.ts"],

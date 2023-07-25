@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from "react";
 import { Test } from "@nestjs/testing";
 import cheerio = require("cheerio");
 import styled from "styled-components";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FunctionComponent } from "react";
 import styled from "styled-components";
 import LabeledField from "../../common/LabeledField";

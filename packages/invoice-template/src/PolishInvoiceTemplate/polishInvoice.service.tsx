@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PdfRenderer } from "@leancodepl/pdf-renderer";
 import { Injectable } from "@nestjs/common";
 import { PolishInvoiceTemplate, PolishInvoiceTemplateProps } from ".";

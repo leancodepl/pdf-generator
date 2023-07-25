@@ -1,4 +1,3 @@
-import * as React from "react";
 import styled from "styled-components";
 
 const SampleComponent: React.FunctionComponent<{ testString?: string }> = ({ testString }) => (

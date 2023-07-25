@@ -1,7 +1,6 @@
-import * as React from "react";
 import { FunctionComponent } from "react";
-import { InvoiceBase, InvoiceBaseProps, InvoiceValues } from "..";
 import { useInvoiceTemplate } from "./useInvoiceTemplate";
+import { InvoiceBase, InvoiceBaseProps, InvoiceValues } from "..";
 
 export type InvoiceItemsTableData = {
     name: string;

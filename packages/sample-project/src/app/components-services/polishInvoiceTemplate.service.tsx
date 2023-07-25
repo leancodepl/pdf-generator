@@ -1,4 +1,3 @@
-import React = require("react");
 import {
     PolishInvoiceHeader,
     PolishInvoiceService,

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ReactNode, FunctionComponent } from "react";
 import { format } from "date-fns";
 import styled from "styled-components";

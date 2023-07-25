@@ -3,6 +3,7 @@
     "node_modules": true,
     "tmp": true,
     "dist": true,
+    "**/.swc": true,
     "coverage": true,
     "test-results": true
   },

@@ -1,5 +1,5 @@
-import { InvoiceItemsTableData, InvoiceItemsTableLabels, LocalizationOptions, TaxesData, TaxesTableLabels } from "..";
 import { useInvoiceTemplate } from "./useInvoiceTemplate";
+import { InvoiceItemsTableData, InvoiceItemsTableLabels, LocalizationOptions, TaxesData, TaxesTableLabels } from "..";
 
 const totalString = "€5,055.00";
 const taxValueString = "690,00\xa0zł";

@@ -12,7 +12,18 @@
         },
         "keepClassNames": true,
         "externalHelpers": true,
-        "loose": true
+        "loose": true,
+        "experimental": {
+            "plugins": [
+                [
+                    "@swc/plugin-styled-components",
+                    {
+                        "displayName": true,
+                        "ssr": true
+                    }
+                ]
+            ]
+        }
     },
     "module": {
         "type": "commonjs",
