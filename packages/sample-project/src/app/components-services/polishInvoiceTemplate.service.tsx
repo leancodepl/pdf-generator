@@ -31,7 +31,7 @@ export class PolishInvoiceTemplateService {
     getRenderScreenshot() {
         const logo = fs.readFileSync(path.join(__dirname, "assets", "lncd-logo.png"));
 
-        return this.polishInvoiceService.renderInvoiceScreenshot({
+        return this.polishInvoiceService.renderInvoiceImage({
             header: { ...header, logo: <Logo src={`data:image/png;base64,${logo.toString("base64")}`} /> },
             seller,
             buyer,

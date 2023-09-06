@@ -14,7 +14,7 @@ export class PolishInvoiceService {
         });
     }
 
-    renderInvoiceScreenshot(props: PolishInvoiceTemplateProps) {
+    renderInvoiceImage(props: PolishInvoiceTemplateProps) {
         return this.pdfRenderer.generateImage({
             element: <PolishInvoiceTemplate {...props} />,
             fonts: pdfRendererConfig,
