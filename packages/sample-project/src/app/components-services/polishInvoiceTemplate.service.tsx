@@ -27,6 +27,19 @@ export class PolishInvoiceTemplateService {
             total,
         });
     }
+
+    getRenderScreenshot() {
+        const logo = fs.readFileSync(path.join(__dirname, "assets", "lncd-logo.png"));
+
+        return this.polishInvoiceService.renderInvoiceScreenshot({
+            header: { ...header, logo: <Logo src={`data:image/png;base64,${logo.toString("base64")}`} /> },
+            seller,
+            buyer,
+            itemsTable,
+            taxesTable,
+            total,
+        });
+    }
 }
 
 const Logo = styled.img`
