@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import SampleComponent from "../components/SampleComponent";
 import { CqrsClient1 } from "./CqrsClient1";
+import SampleComponent from "../components/SampleComponent";
 
 @Injectable()
 export class Query1ComponentService {
