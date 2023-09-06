@@ -27,7 +27,14 @@ export class PdfRenderer {
         const headerHtml = headerElement && this.reactRenderer.generate(headerElement, fonts);
         const footerHtml = footerElement && this.reactRenderer.generate(footerElement, fonts);
 
-        const params: GeneratePageParams = {
+        const htmlWithHeaderAndFooter = this.reactRenderer.generateWithHeaderFooter(
+            element,
+            headerElement,
+            footerElement,
+            fonts,
+        );
+
+        const params: GeneratePdfPageParams = {
             html,
             headerHtml,
             footerHtml,
@@ -36,7 +43,7 @@ export class PdfRenderer {
         };
 
         return {
-            asHtml: () => html,
+            asHtml: () => htmlWithHeaderAndFooter,
             asBuffer: () => this.pdfGenerator.generateBuffer(params),
             // asStream: () => this.pdfGenerator.generateStream(params), // TODO: there seems to be an error when returning stream response from nest api
             asStream: async () => new StreamableFile(await this.pdfGenerator.generateBuffer(params)).getStream(),
