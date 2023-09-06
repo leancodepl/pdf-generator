@@ -42,6 +42,22 @@ describe("ReactRendererService", () => {
             expect($(`[data-styled="true"]`).html()?.includes("height:10px;")).toBeTruthy();
         });
     });
+
+    describe("generate html with header and footer", () => {
+        it("should generate html with header and footer", () => {
+            const html = service.generateWithHeaderAndFooter(
+                React.createElement("div"),
+                React.createElement("div"),
+                React.createElement("div"),
+                [],
+            );
+
+            const $ = cheerio.load(html);
+
+            expect($(`header`).length).toBeGreaterThan(0);
+            expect($(`footer`).length).toBeGreaterThan(0);
+        });
+    });
 });
 
 const StyledDiv = styled.div`
