@@ -69,14 +69,7 @@ export class PdfGenerator {
     }) => {
         await PdfGenerator.preparePageForScreenshot(page, data);
 
-        return (await page.screenshot({
-            captureBeyondViewport: data.captureBeyondViewport,
-            type: data.type,
-            fullPage: data.fullPage,
-            quality: data.quality,
-            clip: data.clip,
-            fromSurface: data.fromSurface,
-        })) as Buffer;
+        return (await page.screenshot(data)) as Buffer;
     };
 
     async generateBuffer(params: GeneratePdfPageParams) {
