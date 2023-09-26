@@ -1,15 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { Page, PaperFormat, PDFOptions } from "puppeteer";
+import { Page, PaperFormat, PDFOptions, ScreenshotOptions } from "puppeteer";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { Readable } from "stream";
 import { BrowserPool } from "./browserPool.service";
 
-export type GeneratePageParams = {
+export type GeneratePdfPageParams = {
     html: string;
     headerHtml?: string;
     footerHtml?: string;
     format: PaperFormat;
     displayHeaderFooter: boolean;
+};
+
+export type GeneratePageScreenshotParams = ScreenshotOptions & {
+    html: string;
 };
 
 @Injectable()
@@ -18,7 +22,7 @@ export class PdfGenerator {
 
     private static async preparePage(
         page: Page,
-        { html, headerHtml, footerHtml, format, displayHeaderFooter }: GeneratePageParams,
+        { html, headerHtml, footerHtml, format, displayHeaderFooter }: GeneratePdfPageParams,
     ): Promise<PDFOptions> {
         await page.setContent(html, {
             timeout: 60000,
@@ -40,23 +44,43 @@ export class PdfGenerator {
         };
     }
 
-    private static generatePdfBufferTask: TaskFunction<GeneratePageParams, Buffer> = async ({ page, data }) => {
+    private static async preparePageForScreenshot(page: Page, { html }: GeneratePageScreenshotParams): Promise<void> {
+        await page.setContent(html, {
+            timeout: 60000,
+            waitUntil: ["load", "domcontentloaded"],
+        });
+    }
+
+    private static generatePdfBufferTask: TaskFunction<GeneratePdfPageParams, Buffer> = async ({ page, data }) => {
         const pdfOptions = await PdfGenerator.preparePage(page, data);
 
         return await page.pdf(pdfOptions);
     };
 
-    private static generatePdfStreamTask: TaskFunction<GeneratePageParams, Readable> = async ({ page, data }) => {
+    private static generatePdfStreamTask: TaskFunction<GeneratePdfPageParams, Readable> = async ({ page, data }) => {
         const pdfOptions = await PdfGenerator.preparePage(page, data);
 
         return await page.createPDFStream(pdfOptions);
     };
 
-    async generateBuffer(params: GeneratePageParams) {
+    private static generateScreenshotTask: TaskFunction<GeneratePageScreenshotParams, Buffer> = async ({
+        page,
+        data,
+    }) => {
+        await PdfGenerator.preparePageForScreenshot(page, data);
+
+        return (await page.screenshot(data)) as Buffer;
+    };
+
+    async generateBuffer(params: GeneratePdfPageParams) {
         return this.browserPool.run(PdfGenerator.generatePdfBufferTask, params);
     }
 
-    async generateStream(params: GeneratePageParams) {
+    async generateStream(params: GeneratePdfPageParams) {
         return this.browserPool.run(PdfGenerator.generatePdfStreamTask, params);
+    }
+
+    async generateScreenshot(params: GeneratePageScreenshotParams) {
+        return this.browserPool.run(PdfGenerator.generateScreenshotTask, params);
     }
 }

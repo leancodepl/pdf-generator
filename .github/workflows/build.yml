@@ -8,6 +8,7 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
         name: Checkout [main]
@@ -15,9 +16,9 @@ jobs:
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "17"
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: npx nx format:check
       - run: npx nx affected --target=build --parallel --max-parallel=3

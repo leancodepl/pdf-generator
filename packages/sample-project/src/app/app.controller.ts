@@ -31,6 +31,20 @@ export class AppController {
         stream.pipe(res);
     }
 
+    @Get("png")
+    async samplePng(@Res() res: Response) {
+        const buffer = await this.pdfRenderer
+            .generateImage({ element: this.sampleComponentService.getComponent() })
+            .asBuffer();
+
+        const filename = "test.png";
+
+        res.header("Content-Type", "image/png");
+        res.header("Content-Disposition", `attachment; filename="${filename}"`);
+
+        res.send(buffer);
+    }
+
     @Get("base-invoice")
     async baseInvoice(@Res() res: Response) {
         const stream = await this.pdfRenderer
@@ -69,5 +83,17 @@ export class AppController {
         res.header("Content-Disposition", `attachment; filename="${filename}"`);
 
         stream.pipe(res);
+    }
+
+    @Get("polish-invoice-png")
+    async polishInvoicePng(@Res() res: Response) {
+        const buffer = await this.polishInvoiceTemplateService.getRenderScreenshot().asBuffer();
+
+        const filename = "polish-invoice.png";
+
+        res.header("Content-Type", "image/png");
+        res.header("Content-Disposition", `attachment; filename="${filename}"`);
+
+        res.send(buffer);
     }
 }

@@ -13,4 +13,12 @@ export class PolishInvoiceService {
             fonts: pdfRendererConfig,
         });
     }
+
+    renderInvoiceImage(props: PolishInvoiceTemplateProps) {
+        return this.pdfRenderer.generateImage({
+            element: <PolishInvoiceTemplate {...props} />,
+            fonts: pdfRendererConfig,
+            fullPage: true,
+        });
+    }
 }
