@@ -19,7 +19,10 @@ export class BrowserPool implements OnModuleInit, OnModuleDestroy {
 
     async onModuleDestroy() {
         if (this.cluster) {
-            await this.cluster.idle();
+            // It is recommended to run idle() before close(), but it
+            // for some reason takes a lot of time and it doesn't seem
+            // to be necessary
+            // await this.cluster.idle();
             await this.cluster.close();
         }
     }
