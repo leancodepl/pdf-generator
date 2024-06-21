@@ -1,8 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Page, PaperFormat, PDFOptions, ScreenshotOptions } from "puppeteer";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
-import { Readable } from "stream";
-import { ReadableStream } from "stream/web";
 import { BrowserPool } from "./browserPool.service";
 
 export type GeneratePdfPageParams = {
@@ -58,10 +56,13 @@ export class PdfGenerator {
         return await page.pdf(pdfOptions);
     };
 
-    private static generatePdfStreamTask: TaskFunction<GeneratePdfPageParams, Readable> = async ({ page, data }) => {
+    private static generatePdfStreamTask: TaskFunction<GeneratePdfPageParams, ReadableStream<Uint8Array>> = async ({
+        page,
+        data,
+    }) => {
         const pdfOptions = await PdfGenerator.preparePage(page, data);
 
-        return Readable.fromWeb((await page.createPDFStream(pdfOptions)) as ReadableStream);
+        return await page.createPDFStream(pdfOptions);
     };
 
     private static generateScreenshotTask: TaskFunction<GeneratePageScreenshotParams, Buffer> = async ({
