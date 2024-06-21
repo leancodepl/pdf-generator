@@ -18,8 +18,8 @@
     "jwks-rsa": "^3.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
-    "puppeteer": "^20.0.0",
-    "puppeteer-cluster": "^0.23.0",
+    "puppeteer": "^22.11.2",
+    "puppeteer-cluster": "^0.24.0",
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0",
     "reflect-metadata": ">=0.1.13",
@@ -68,6 +68,7 @@
     "jest-junit": "13.2.0",
     "nx": "16.5.5",
     "prettier": "^2.0.0",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "verdaccio": "^5.0.4"
   }
 }

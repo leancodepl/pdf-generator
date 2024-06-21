@@ -11,7 +11,7 @@ export class BrowserPool implements OnModuleInit, OnModuleDestroy {
             concurrency: Cluster.CONCURRENCY_PAGE,
             maxConcurrency: 2,
             puppeteerOptions: {
-                headless: "new",
+                headless: true,
                 args: ["--no-sandbox"],
             },
         });
