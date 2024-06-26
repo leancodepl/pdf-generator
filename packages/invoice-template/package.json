@@ -12,6 +12,9 @@
   "homepage": "https://github.com/leancodepl/pdf-generator/tree/main/packages/invoice-template#readme",
   "author": "LeanCode",
   "license": "Apache-2.0",
+  "dependencies": {
+    "@swc/helpers": "^0.5.1"
+  },
   "keywords": [
     "LeanCode",
     "pdf",
