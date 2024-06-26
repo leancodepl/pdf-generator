@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.5.0](https://github.com/leancodepl/pdf-generator/compare/v0.4.0...v0.5.0) (2024-06-26)
+
+
+### Bug Fixes
+
+* long module destroying ([29747f1](https://github.com/leancodepl/pdf-generator/commit/29747f1b6ff313bcd7a4a84861ce736ab82ab86a))
+
+
+### Features
+
+* align generatePdfStreamTask with type returned by createPDFStream ([f21c004](https://github.com/leancodepl/pdf-generator/commit/f21c0047f4ef651838c195e551b3bb79c3f40295))
+
+
+
 # [0.4.0](https://github.com/leancodepl/pdf-generator/compare/v0.3.7...v0.4.0) (2023-08-02)
 
 
