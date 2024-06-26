@@ -7,7 +7,7 @@ export type SellerBuyerData = {
     addressLine1: string;
     addressLine2?: string;
     addressLine3?: string;
-    taxId: string;
+    taxId?: string;
     additionalFields?: SellerBuyerAdditionalField[];
 };
 
@@ -34,7 +34,9 @@ export const SellerBuyerComponent: FunctionComponent<SellerBuyerComponentProps> 
                 {addressLine2 && <div>{addressLine2}</div>}
                 {addressLine3 && <div>{addressLine3}</div>}
             </b>
-            <LabeledField disableAutoLeftMargin label="NIP:" orientation="horizontal" value={<b>{taxId}</b>} />
+            {taxId && (
+                <LabeledField disableAutoLeftMargin label="NIP:" orientation="horizontal" value={<b>{taxId}</b>} />
+            )}
         </BiggerFontWrapper>
         {additionalFields?.map(({ label, value }) => (
             <LabeledField

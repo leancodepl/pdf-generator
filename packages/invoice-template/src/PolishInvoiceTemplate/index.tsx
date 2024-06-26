@@ -6,7 +6,6 @@ import { usePolishInvoiceTemplate } from "./usePolishInvoiceTemplate";
 import LabeledField from "../common/LabeledField";
 import Table from "../common/Table";
 
-const invoiceItemsTableClassName = "main-table";
 const taxesTableClassName = "taxes-table";
 
 export type PolishInvoiceHeader = {
@@ -48,6 +47,7 @@ export type PolishInvoiceTemplateProps = {
     seller: SellerBuyerData;
     buyer: SellerBuyerData;
     itemsTable: PolishInvoiceTableItem[];
+    itemsComment?: string;
     taxesTable: PolishInvoiceTax[];
     total: PolishInvoiceTotal;
 };
@@ -57,6 +57,7 @@ export const PolishInvoiceTemplate: FunctionComponent<PolishInvoiceTemplateProps
     seller,
     buyer,
     itemsTable,
+    itemsComment,
     taxesTable,
     total: { currency, totalValue, inWords },
 }) => {
@@ -92,12 +93,10 @@ export const PolishInvoiceTemplate: FunctionComponent<PolishInvoiceTemplateProps
             </TitleWrapper>
             <Seller data={seller} type="seller" />
             <Buyer data={buyer} type="buyer" />
-            <Table
-                boldLabels
-                className={invoiceItemsTableClassName}
-                columns={itemsColumns}
-                data={formattedItemsTable}
-            />
+            <Items>
+                <Table boldLabels columns={itemsColumns} data={formattedItemsTable} />
+                {itemsComment && <span>{itemsComment}</span>}
+            </Items>
             <Table boldLabels className={taxesTableClassName} columns={taxesColumns} data={formattedTaxesTable} />
             <Total>
                 <ToBePaid>
@@ -142,15 +141,15 @@ const Root = styled.div`
         }
     }
 
-    .${invoiceItemsTableClassName} {
-        grid-area: itemsTable;
-
-        margin-top: 30pt;
-    }
-
     .${taxesTableClassName} {
         grid-area: taxesTable;
     }
+`;
+
+const Items = styled.div`
+    grid-area: itemsTable;
+
+    margin-top: 30pt;
 `;
 
 const LogoWrapper = styled.div`
@@ -190,7 +189,7 @@ const Total = styled.div`
 const ToBePaid = styled.u`
     font-size: 15pt;
     font-weight: bold;
-    font-decoration: underline;
+    text-decoration: underline;
 `;
 
 const InWords = styled.div`
