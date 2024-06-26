@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.5.0](https://github.com/leancodepl/pdf-generator/compare/v0.4.0...v0.5.0) (2024-06-26)
+
+
+### Bug Fixes
+
+* include required @swc/helpers in the invoice-template's dependencies ([35ee79f](https://github.com/leancodepl/pdf-generator/commit/35ee79f788d0d6efcc0fc245c0097f50665eb553))
+
+
+### Features
+
+* add itemsComment field ([35ae877](https://github.com/leancodepl/pdf-generator/commit/35ae87754360a3811e6874be139ff4c566a865e8))
+* make taxId in SellerBuyerComponent optional ([c141f7e](https://github.com/leancodepl/pdf-generator/commit/c141f7e637d28d64313eb688691f5900adee6b90))
+
+
+
 # [0.4.0](https://github.com/leancodepl/pdf-generator/compare/v0.3.7...v0.4.0) (2023-08-02)
 
 
