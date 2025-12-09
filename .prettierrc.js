@@ -1,14 +1,3 @@
-const baseConfig = require("@leancode/prettier-config");
+const baseConfig = require("@leancodepl/prettier-config")
 
-module.exports = {
-    ...baseConfig,
-    overrides: [
-        ...baseConfig.overrides,
-        {
-            files: "*.yml",
-            options: {
-                tabWidth: 2,
-            },
-        },
-    ],
-};
+module.exports = baseConfig

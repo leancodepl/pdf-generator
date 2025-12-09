@@ -5,7 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
-    "@leancode/cqrs-client-base": "^6.2.0",
+    "@leancodepl/cqrs-client-base": "9.6.6",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "@jscutlery/semver": "5.7.1",
-    "@leancode/eslint-config": "6.5.1",
-    "@leancode/prettier-config": "6.5.0",
+    "@leancodepl/eslint-config": "9.6.6",
+    "@leancodepl/prettier-config": "9.6.6",
     "@nestjs/schematics": "11.0.9",
     "@nestjs/testing": "11.1.9",
     "@nx/eslint-plugin": "22.2.0",
