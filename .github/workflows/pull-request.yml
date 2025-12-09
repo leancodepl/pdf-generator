@@ -7,25 +7,26 @@ jobs:
   pr:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
-      - uses: actions/setup-node@v1
+        uses: nrwl/nx-set-shas@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "17"
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: npx nx format:check
+      - run: npx nx affected --target=lint --parallel --max-parallel=3
       - run: npx nx affected --target=build --parallel --max-parallel=3
       - run: npx nx affected --target=test --parallel --max-parallel=2 --ci
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v5
         if: always()
 
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: >
           always() && github.event.sender.login != 'dependabot[bot]' && ( github.event_name != 'pull_request' ||
           github.event.pull_request.head.repo.full_name == github.repository )
@@ -34,7 +35,7 @@ jobs:
           files: test-results/**/*.xml
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Unit Test Results
           path: test-results/**/*.xml
