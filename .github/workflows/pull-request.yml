@@ -11,16 +11,18 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
       - run: npm ci
-      - run: npx nx format:check
-      - run: npx nx affected --target=lint --parallel --max-parallel=3
-      - run: npx nx affected --target=build --parallel --max-parallel=3
-      - run: npx nx affected --target=test --parallel --max-parallel=2 --ci
+      - run: npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{
+          github.event.pull_request.head.sha }}
+      - run: npx nx affected --target=lint --parallel --max-parallel=3 --base=${{ github.event.pull_request.base.sha }} --head=${{
+          github.event.pull_request.head.sha }}
+      - run: npx nx affected --target=build --parallel --max-parallel=3 --base=${{ github.event.pull_request.base.sha }} --head=${{
+          github.event.pull_request.head.sha }}
+      - run: npx nx affected --target=test --parallel --max-parallel=2 --ci --base=${{ github.event.pull_request.base.sha }} --head=${{
+          github.event.pull_request.head.sha }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         if: always()

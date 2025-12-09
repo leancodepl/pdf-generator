@@ -19,16 +19,16 @@ const LabeledField: FunctionComponent<LabeledFieldProps> = ({
     marginTop,
     disableAutoLeftMargin = false,
 }) => (
-    <Root disableAutoLeftMargin={disableAutoLeftMargin} marginTop={marginTop} orientation={orientation}>
+    <Root $disableAutoLeftMargin={disableAutoLeftMargin} $marginTop={marginTop} $orientation={orientation}>
         <span>{label}</span>
         <Value>{value}</Value>
     </Root>
 );
 
 type RootProps = {
-    marginTop?: MarginTop;
-    orientation: Orientation;
-    disableAutoLeftMargin: boolean;
+    $marginTop?: MarginTop;
+    $orientation: Orientation;
+    $disableAutoLeftMargin: boolean;
 };
 
 const marginTopToPt = (marginTop: MarginTop) => {
@@ -46,13 +46,13 @@ const Value = styled.span``;
 
 const Root = styled.div<RootProps>`
     display: flex;
-    flex-direction: ${({ orientation }) => (orientation === "horizontal" ? "row" : "column")};
+    flex-direction: ${({ $orientation }) => ($orientation === "horizontal" ? "row" : "column")};
 
-    ${({ marginTop }) => (marginTop ? `margin: ${marginTopToPt(marginTop)};` : "")}
+    ${({ $marginTop }) => ($marginTop ? `margin: ${marginTopToPt($marginTop)};` : "")}
 
     ${Value} {
-        margin-left: ${({ orientation, disableAutoLeftMargin }) =>
-            orientation === "horizontal" ? (disableAutoLeftMargin ? "4pt" : "auto") : "0"};
+        margin-left: ${({ $orientation, $disableAutoLeftMargin }) =>
+            $orientation === "horizontal" ? ($disableAutoLeftMargin ? "4pt" : "auto") : "0"};
     }
 `;
 

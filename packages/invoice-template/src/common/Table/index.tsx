@@ -27,7 +27,7 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className, boldLa
         <thead>
             <tr>
                 {columns.map(column => (
-                    <Th key={column.dataIndex} alignment="center">
+                    <Th key={column.dataIndex} $alignment="center">
                         {boldLabels ? <b>{column.title}</b> : column.title}
                     </Th>
                 ))}
@@ -37,7 +37,7 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className, boldLa
             {data.map((row, index) => (
                 <tr key={index}>
                     {columns.map((column, index) => (
-                        <Td key={index} alignment={column.alignment}>
+                        <Td key={index} $alignment={column.alignment}>
                             {row[column.dataIndex]}
                         </Td>
                     ))}
@@ -48,14 +48,14 @@ const Table: FunctionComponent<TableProps> = ({ columns, data, className, boldLa
 );
 
 type TableCellProps = {
-    width?: string;
-    alignment?: string;
+    $width?: string;
+    $alignment?: string;
 };
 
 const Th = styled.th<TableCellProps>`
     font-weight: 400;
 
-    ${({ alignment }) => (alignment ? `text-align: ${alignment};` : "")}
+    ${({ $alignment }) => ($alignment ? `text-align: ${$alignment};` : "")}
 
     b {
         border: 0 !important;
@@ -65,7 +65,7 @@ const Th = styled.th<TableCellProps>`
 const Td = styled.td<TableCellProps>`
     padding: 1pt 2pt;
 
-    ${({ alignment }) => (alignment ? `text-align: ${alignment};` : "")}
+    ${({ $alignment }) => ($alignment ? `text-align: ${$alignment};` : "")}
 `;
 
 export default Table;
