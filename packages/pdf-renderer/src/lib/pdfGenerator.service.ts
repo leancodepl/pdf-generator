@@ -50,7 +50,7 @@ export class PdfGenerator {
         });
     }
 
-    private static generatePdfBufferTask: TaskFunction<GeneratePdfPageParams, Buffer> = async ({ page, data }) => {
+    private static generatePdfBufferTask: TaskFunction<GeneratePdfPageParams, Uint8Array> = async ({ page, data }) => {
         const pdfOptions = await PdfGenerator.preparePage(page, data);
 
         return await page.pdf(pdfOptions);

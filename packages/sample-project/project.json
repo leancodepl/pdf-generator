@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/sample-project/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -13,7 +14,8 @@
         "tsConfig": "packages/sample-project/tsconfig.app.json",
         "assets": ["packages/sample-project/src/assets"],
         "compiler": "tsc",
-        "target": "node"
+        "target": "node",
+        "webpackConfig": "packages/sample-project/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -50,6 +52,5 @@
         "passWithNoTests": true
       }
     }
-  },
-  "tags": []
+  }
 }

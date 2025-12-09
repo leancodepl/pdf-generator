@@ -16,7 +16,7 @@ describe("FontLibraryService", () => {
 
             const service = app.get(FontLibrary);
 
-            expect(() => service.getFont("test")).toThrowError();
+            expect(() => service.getFont("test")).toThrow();
         });
 
         it("should return a font", async () => {
