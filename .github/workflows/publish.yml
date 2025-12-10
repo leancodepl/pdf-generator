@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,6 +20,8 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://registry.npmjs.org"
+      - name: Update npm
+        run: npm install -g npm@latest
       - run: npm ci
       - run: npx nx format:check --all
       - run: >

@@ -17,13 +17,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+      - name: Update npm
+        run: npm install -g npm@latest
       - run: npm ci
-      - run: npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{
+      - run:
+          npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{
           github.event.pull_request.head.sha }}
-      - run: npx nx affected --target=build --parallel --max-parallel=3 --base=${{ github.event.pull_request.base.sha }} --head=${{
-          github.event.pull_request.head.sha }}
-      - run: npx nx affected --target=test --parallel --max-parallel=2 --ci --base=${{ github.event.pull_request.base.sha }} --head=${{
-          github.event.pull_request.head.sha }}
+      - run:
+          npx nx affected --target=build --parallel --max-parallel=3 --base=${{ github.event.pull_request.base.sha }}
+          --head=${{ github.event.pull_request.head.sha }}
+      - run:
+          npx nx affected --target=test --parallel --max-parallel=2 --ci --base=${{ github.event.pull_request.base.sha
+          }} --head=${{ github.event.pull_request.head.sha }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         if: always()

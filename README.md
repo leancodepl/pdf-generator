@@ -24,3 +24,29 @@ At the top of your own Dockerfile add the following line.
 You can also easily get the current version, by using `latest`.
 
 `FROM ghcr.io/leancodepl/pdf-generator:latest`
+
+
+### Releasing packages to npm
+
+To release a new version, run the following command:
+
+```bash
+npx nx run workspace:version --releaseAs=major
+# or
+npx nx run workspace:version --releaseAs=minor
+# or
+npx nx run workspace:version --releaseAs=patch
+```
+
+This will create a new commit and tag. Push the changes and the new tag to the remote repository. The tag's push will trigger the workflow.
+
+### Releasing the dockerfile
+
+To release the dockerfile, push a new tag with the prefix `docker-`, e.g.:
+
+```bash
+git tag docker-v0.1.0
+git push origin docker-v0.1.0
+```
+
+This will trigger the workflow and push the new docker image to the Azure Container Registry.

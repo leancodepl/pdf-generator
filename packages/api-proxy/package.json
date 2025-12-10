@@ -1,7 +1,7 @@
 {
   "name": "@leancodepl/api-proxy",
   "description": "LeanCode contacts generator nest api proxy with auth token forwarder",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leancodepl/pdf-generator.git"
@@ -18,5 +18,16 @@
     "strongly",
     "typed",
     "contactsgenerator"
-  ]
+  ],
+  "dependencies": {
+    "@leancodepl/cqrs-client-base": ">=9.0.0",
+    "@nestjs/axios": ">=4.0.0",
+    "@nestjs/common": ">=11.0.0",
+    "@nestjs/core": ">=11.0.0",
+    "@nestjs/passport": ">=11.0.0",
+    "jsonwebtoken": ">=9.0.0",
+    "jwks-rsa": ">=3.0.0",
+    "passport-jwt": ">=4.0.0",
+    "rxjs": ">=7.0.0"
+  }
 }
