@@ -1,22 +1,22 @@
-import { ReactElement } from "react";
-import { Injectable } from "@nestjs/common";
-import { renderToStaticMarkup } from "react-dom/server";
-import { ServerStyleSheet } from "styled-components";
-import { FontLibrary } from "./fontLibrary.service";
+import { ReactElement } from "react"
+import { renderToStaticMarkup } from "react-dom/server"
+import { Injectable } from "@nestjs/common"
+import { ServerStyleSheet } from "styled-components"
+import { FontLibrary } from "./fontLibrary.service"
 
 @Injectable()
 export class ReactRenderer {
-    constructor(private readonly fontLibrary: FontLibrary) {}
+  constructor(private readonly fontLibrary: FontLibrary) {}
 
-    generate(element: ReactElement, fonts: (symbol | string)[] = []) {
-        const sheet = new ServerStyleSheet();
-        const html = renderToStaticMarkup(sheet.collectStyles(element));
+  generate(element: ReactElement, fonts: (string | symbol)[] = []) {
+    const sheet = new ServerStyleSheet()
+    const html = renderToStaticMarkup(sheet.collectStyles(element))
 
-        const styleTags = sheet.getStyleTags();
+    const styleTags = sheet.getStyleTags()
 
-        sheet.seal();
+    sheet.seal()
 
-        return `
+    return `
             <html>
                 <head>
                     <style>
@@ -28,25 +28,25 @@ export class ReactRenderer {
                     ${html}
                 </body>
             </html>
-        `;
-    }
+        `
+  }
 
-    generateWithHeaderAndFooter(
-        element: ReactElement,
-        headerElement?: ReactElement,
-        footerElement?: ReactElement,
-        fonts: (symbol | string)[] = [],
-    ) {
-        const sheet = new ServerStyleSheet();
-        const html = renderToStaticMarkup(sheet.collectStyles(element));
-        const headerHtml = headerElement && renderToStaticMarkup(sheet.collectStyles(headerElement));
-        const footerHtml = footerElement && renderToStaticMarkup(sheet.collectStyles(footerElement));
+  generateWithHeaderAndFooter(
+    element: ReactElement,
+    headerElement?: ReactElement,
+    footerElement?: ReactElement,
+    fonts: (string | symbol)[] = [],
+  ) {
+    const sheet = new ServerStyleSheet()
+    const html = renderToStaticMarkup(sheet.collectStyles(element))
+    const headerHtml = headerElement && renderToStaticMarkup(sheet.collectStyles(headerElement))
+    const footerHtml = footerElement && renderToStaticMarkup(sheet.collectStyles(footerElement))
 
-        const styleTags = sheet.getStyleTags();
+    const styleTags = sheet.getStyleTags()
 
-        sheet.seal();
+    sheet.seal()
 
-        return `
+    return `
             <html>
                 <head>
                     <style>
@@ -54,9 +54,9 @@ export class ReactRenderer {
                             margin: 0;
                         }
                         ${
-                            headerHtml || footerHtml
-                                ? "header { position: fixed; top: 0; } footer { position: fixed; bottom: 0; }"
-                                : ""
+                          headerHtml || footerHtml
+                            ? "header { position: fixed; top: 0; } footer { position: fixed; bottom: 0; }"
+                            : ""
                         }
                     </style>
                     <style>
@@ -70,6 +70,6 @@ export class ReactRenderer {
                     ${footerHtml ? `<footer>${footerHtml}</footer>` : ""}
                 </body>
             </html>
-        `;
-    }
+        `
+  }
 }

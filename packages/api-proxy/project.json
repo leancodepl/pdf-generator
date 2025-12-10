@@ -3,13 +3,10 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/api-proxy/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/api-proxy/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -36,6 +33,5 @@
         "command": "npm publish dist/packages/api-proxy --access public"
       }
     }
-  },
-  "tags": []
+  }
 }

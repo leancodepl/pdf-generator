@@ -5,17 +5,23 @@ on:
     tags:
       - "v*"
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "17"
+          node-version-file: ".nvmrc"
           registry-url: "https://registry.npmjs.org"
+      - name: Update npm
+        run: npm install -g npm@latest
       - run: npm ci
       - run: npx nx format:check --all
       - run: >
@@ -25,9 +31,9 @@ jobs:
           --ci
       - name: get-npm-version
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
+        uses: martinbeentjes/npm-get-version-action@main
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

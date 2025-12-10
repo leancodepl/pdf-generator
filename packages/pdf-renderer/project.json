@@ -3,13 +3,10 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/pdf-renderer/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/pdf-renderer/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -36,6 +33,5 @@
         "command": "npm publish dist/packages/pdf-renderer --access public"
       }
     }
-  },
-  "tags": []
+  }
 }

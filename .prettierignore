@@ -3,3 +3,6 @@
 /dist
 /coverage
 *.md
+
+/.nx/cache
+/.nx/workspace-data
