@@ -1,8 +1,8 @@
-import { CommandResult } from "@leancode/cqrs-client-base"
 import { HttpService } from "@nestjs/axios"
 import { Injectable } from "@nestjs/common"
 import { firstValueFrom } from "rxjs"
 import { map } from "rxjs/operators"
+import { CommandResult } from "@leancodepl/cqrs-client-base"
 import { CqrsClient } from "./cqrsClient"
 import type { Request } from "express"
 

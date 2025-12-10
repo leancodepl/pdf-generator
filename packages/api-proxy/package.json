@@ -20,6 +20,7 @@
     "contactsgenerator"
   ],
   "dependencies": {
+    "@leancodepl/cqrs-client-base": ">=9.0.0",
     "@nestjs/axios": ">=4.0.0",
     "@nestjs/common": ">=11.0.0",
     "@nestjs/core": ">=11.0.0",
