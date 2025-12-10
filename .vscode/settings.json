@@ -8,13 +8,6 @@
     "test-results": true
   },
 
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
@@ -44,8 +37,5 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit"
     }
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
