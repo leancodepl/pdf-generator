@@ -12,9 +12,16 @@
   "homepage": "https://github.com/leancodepl/pdf-generator/tree/main/packages/pdf-renderer#readme",
   "author": "LeanCode",
   "license": "Apache-2.0",
-  "peerDependencies": {
-    "react": "*",
-    "react-dom": "*"
+  "dependencies": {
+    "@nestjs/common": ">=11.0.0",
+    "puppeteer": ">=24.0.0",
+    "puppeteer-cluster": ">=0.25.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": ">=11.0.0"
   },
   "keywords": [
     "LeanCode",

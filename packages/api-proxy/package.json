@@ -18,5 +18,15 @@
     "strongly",
     "typed",
     "contactsgenerator"
-  ]
+  ],
+  "dependencies": {
+    "@nestjs/axios": ">=4.0.0",
+    "@nestjs/common": ">=11.0.0",
+    "@nestjs/core": ">=11.0.0",
+    "@nestjs/passport": ">=11.0.0",
+    "jsonwebtoken": ">=9.0.0",
+    "jwks-rsa": ">=3.0.0",
+    "passport-jwt": ">=4.0.0",
+    "rxjs": ">=7.0.0"
+  }
 }
