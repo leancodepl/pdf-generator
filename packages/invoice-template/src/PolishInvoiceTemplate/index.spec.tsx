@@ -2,18 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/react";
-import { PolishInvoiceTemplate } from ".";
-import { polishInvoiceTestProps } from "./testData";
+import { render } from "@testing-library/react"
+import { PolishInvoiceTemplate } from "."
+import { polishInvoiceTestProps } from "./testData"
 
 describe("PolishInvoiceTemplate", () => {
-    let component: HTMLElement;
+  let component: HTMLElement
 
-    beforeAll(() => {
-        component = render(<PolishInvoiceTemplate {...polishInvoiceTestProps} />).baseElement as HTMLElement;
-    });
+  beforeAll(() => {
+    component = render(<PolishInvoiceTemplate {...polishInvoiceTestProps} />).baseElement as HTMLElement
+  })
 
-    it("should render a component without errors", () => {
-        expect(component).toBeTruthy();
-    });
-});
+  it("should render a component without errors", () => {
+    expect(component).toBeTruthy()
+  })
+})

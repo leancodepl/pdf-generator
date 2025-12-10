@@ -1,33 +1,33 @@
 {
-    "jsc": {
-        "target": "es2017",
-        "parser": {
-            "syntax": "typescript",
-            "decorators": true,
-            "dynamicImport": true
-        },
-        "transform": {
-            "decoratorMetadata": true,
-            "legacyDecorator": true
-        },
-        "keepClassNames": true,
-        "externalHelpers": true,
-        "loose": true,
-        "experimental": {
-            "plugins": [
-                [
-                    "@swc/plugin-styled-components",
-                    {
-                        "displayName": true,
-                        "ssr": true
-                    }
-                ]
-            ]
-        }
+  "jsc": {
+    "target": "es2017",
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
     },
-    "module": {
-        "type": "commonjs",
-        "strict": true,
-        "noInterop": true
+    "transform": {
+      "decoratorMetadata": true,
+      "legacyDecorator": true
+    },
+    "keepClassNames": true,
+    "externalHelpers": true,
+    "loose": true,
+    "experimental": {
+      "plugins": [
+        [
+          "@swc/plugin-styled-components",
+          {
+            "displayName": true,
+            "ssr": true
+          }
+        ]
+      ]
     }
+  },
+  "module": {
+    "type": "commonjs",
+    "strict": true,
+    "noInterop": true
+  }
 }

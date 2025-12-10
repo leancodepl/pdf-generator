@@ -37,5 +37,8 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit"
     }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

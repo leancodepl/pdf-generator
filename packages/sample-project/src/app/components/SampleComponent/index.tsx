@@ -1,16 +1,16 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const SampleComponent: React.FunctionComponent<{ testString?: string }> = ({ testString }) => (
-    <>
-        <BlueDiv>sample pdf generator component</BlueDiv>
-        {testString}
-    </>
-);
+  <>
+    <BlueDiv>sample pdf generator component</BlueDiv>
+    {testString}
+  </>
+)
 
 const BlueDiv = styled.div`
-    background: lightskyblue;
+  background: lightskyblue;
 
-    color: white;
-`;
+  color: white;
+`
 
-export default SampleComponent;
+export default SampleComponent

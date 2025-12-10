@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import SampleComponent from "../components/SampleComponent";
+import { Injectable } from "@nestjs/common"
+import SampleComponent from "../components/SampleComponent"
 
 @Injectable()
 export class SampleComponentService {
-    getComponent() {
-        return <SampleComponent />;
-    }
+  getComponent() {
+    return <SampleComponent />
+  }
 }
