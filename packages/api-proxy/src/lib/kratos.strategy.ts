@@ -1,15 +1,10 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { PassportStrategy } from "@nestjs/passport"
 import { Configuration, FrontendApi, Session } from "@ory/client"
 import { Strategy } from "passport-custom"
 import type { Request } from "express"
 
 export type KratosStrategyConfig = {
-  /**
-   * The base URL of the Ory Kratos public API
-   * For Ory Network: https://{project-slug}.projects.oryapis.com
-   * For self-hosted: http://localhost:4433 (or your Kratos public URL)
-   */
   kratosPublicUrl: string
 }
 
@@ -18,9 +13,6 @@ export type KratosUser = {
   sessionToken?: string
 }
 
-/**
- * Extracts session token from Authorization header (Bearer token)
- */
 function extractSessionTokenFromHeader(req: Request): string | null {
   const authHeader = req.headers.authorization
   if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -29,9 +21,6 @@ function extractSessionTokenFromHeader(req: Request): string | null {
   return null
 }
 
-/**
- * Extracts session cookie string from request
- */
 function extractCookies(req: Request): string | undefined {
   const cookieHeader = req.headers.cookie
   return cookieHeader || undefined
@@ -56,7 +45,7 @@ export class KratosStrategy extends PassportStrategy(Strategy, "kratos") {
     const cookies = extractCookies(req)
 
     if (!sessionToken && !cookies) {
-      throw new Error("No session token or cookie provided")
+      throw new UnauthorizedException()
     }
 
     try {
@@ -69,10 +58,8 @@ export class KratosStrategy extends PassportStrategy(Strategy, "kratos") {
         session,
         sessionToken: sessionToken || undefined,
       }
-    } catch (error: unknown) {
-      // Ory client throws on 401/403 responses
-      const errorMessage = error instanceof Error ? error.message : "Session verification failed"
-      throw new Error(`Kratos session verification failed: ${errorMessage}`)
+    } catch {
+      throw new UnauthorizedException()
     }
   }
 }
