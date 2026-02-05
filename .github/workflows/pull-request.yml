@@ -16,7 +16,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Update npm
         run: npm install -g npm@latest
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run:
           npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{
           github.event.pull_request.head.sha }}

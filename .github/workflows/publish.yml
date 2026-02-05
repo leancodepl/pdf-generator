@@ -22,7 +22,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - name: Update npm
         run: npm install -g npm@latest
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npx nx format:check --all
       - run: >
           npx nx run-many --projects=pdf-renderer,invoice-template,api-proxy --target=build --parallel --max-parallel=3
