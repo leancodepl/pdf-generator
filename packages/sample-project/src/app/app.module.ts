@@ -12,6 +12,7 @@ import { PolishInvoiceTemplateService } from "./components-services/polishInvoic
 import { Query1ComponentService } from "./components-services/query1Component.service"
 import { SampleComponentService } from "./components-services/sampleComponent.service"
 import { fontsPath } from "./fonts"
+import { KratosController } from "./kratos.controller"
 import { QueryController } from "./query.controller"
 
 @Module({
@@ -29,18 +30,23 @@ import { QueryController } from "./query.controller"
     ApiProxyModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
+        // JWT authentication (e.g., for OAuth2/OIDC providers)
         jwtStrategyConfig: {
-          jwksUri: configService.get("JWKS_URI") ?? "",
+          jwksUri: configService.get("JWKS_URI") ?? "https://localhost:3333/auth/.well-known/openid-configuration/jwks",
           jsonWebTokenOptions: {
             audience: "internal_api",
           },
         },
+        // Ory Kratos authentication (for Kratos-based identity management)
+        kratosStrategyConfig: {
+          kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "http://localhost:4433",
+        },
       }),
       inject: [ConfigService],
     }),
-    PassportModule.register({ defaultStrategy: "jwt" }),
+    PassportModule.register({ defaultStrategy: "kratos" }),
   ],
-  controllers: [AppController, QueryController],
+  controllers: [AppController, QueryController, KratosController],
   providers: [
     SampleComponentService,
     BaseInvoiceService,
