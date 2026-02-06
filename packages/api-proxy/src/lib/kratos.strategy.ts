@@ -13,15 +13,17 @@ export type KratosUser = {
   sessionToken?: string
 }
 
-function extractSessionTokenFromHeader(req: Request): string | null {
+const bearerPrefix = "Bearer "
+
+function extractSessionTokenFromHeader(req: Request) {
   const authHeader = req.headers.authorization
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    return authHeader.substring(7)
+  if (authHeader && authHeader.startsWith(bearerPrefix)) {
+    return authHeader.substring(bearerPrefix.length)
   }
-  return null
+  return undefined
 }
 
-function extractCookies(req: Request): string | undefined {
+function extractCookies(req: Request) {
   const cookieHeader = req.headers.cookie
   return cookieHeader || undefined
 }
