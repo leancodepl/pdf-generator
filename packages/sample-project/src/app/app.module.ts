@@ -44,7 +44,7 @@ import { QueryController } from "./query.controller"
       }),
       inject: [ConfigService],
     }),
-    PassportModule.register({ defaultStrategy: "kratos" }),
+    PassportModule.register({ defaultStrategy: "jwt" }),
   ],
   controllers: [AppController, QueryController, KratosController],
   providers: [
