@@ -42,7 +42,7 @@ export class KratosStrategy extends PassportStrategy(Strategy, "kratos") {
     )
   }
 
-  async validate(req: Request): Promise<KratosUser> {
+  async validate(req: Request) {
     const sessionToken = extractSessionTokenFromHeader(req)
     const cookies = extractCookies(req)
 
@@ -51,14 +51,14 @@ export class KratosStrategy extends PassportStrategy(Strategy, "kratos") {
     }
 
     try {
-      const { data: session } = await this.kratosClient.toSession({
+      await this.kratosClient.toSession({
         xSessionToken: sessionToken || undefined,
         cookie: cookies,
       })
 
       return {
-        session,
-        sessionToken: sessionToken || undefined,
+        token: sessionToken,
+        cookie: cookies,
       }
     } catch {
       throw new UnauthorizedException()
