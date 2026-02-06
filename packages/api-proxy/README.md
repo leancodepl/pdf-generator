@@ -1,305 +1,255 @@
 # api-proxy
 
-Used for authentication and communication with a [contractsgenerator](https://github.com/leancodepl/contractsgenerator)
-based api.
+Handles authentication and communication with a [contractsgenerator](https://github.com/leancodepl/contractsgenerator)-based API. Supports JWT (e.g. JWKS) and [Ory Kratos](https://www.ory.sh/docs/kratos) session validation (cookie or Bearer token).
 
-Supports two authentication strategies:
+## Installation
 
-- **JWT** – e.g. for OAuth2/OIDC providers (JWKS)
-- **Ory Kratos** – for [Ory Kratos](https://www.ory.sh/docs/kratos)-based identity management (session validation via cookie or Bearer token)
-
-## Usage
-
-### register
-
-```ts
-import { VerifyOptions } from "jsonwebtoken";
-
-ApiProxy.register({ isGlobal, jwtStrategyConfig, kratosStrategyConfig }: ApiProxySyncConfiguration): DynamicModule
-
-export type ApiProxySyncConfiguration = {
-    isGlobal?: boolean;
-    /** Optional. Provide to use JWT (e.g. JWKS) authentication. */
-    jwtStrategyConfig?: JwtStrategyConfig;
-    /** Optional. Provide to use Ory Kratos authentication. */
-    kratosStrategyConfig?: KratosStrategyConfig;
-};
-
-export type JwtStrategyConfig = {
-    jwksUri: string;
-    jsonWebTokenOptions?: VerifyOptions;
-};
-
-export type KratosStrategyConfig = {
-    /** Public URL of your Ory Kratos instance (e.g. http://localhost:4433). */
-    kratosPublicUrl: string;
-};
-
-export type KratosUser = {
-    session: Session;  // from @ory/client
-    sessionToken?: string;
-};
+```bash
+npm install @leancodepl/api-proxy
 ```
 
-##### isGlobal
+## API
 
-You can specify if you want to register a module globally.
+### `ApiProxyModule.register(config)`
 
-##### jwksUri
+Registers the API proxy module with synchronous configuration.
 
-Uri of your auth jwks.
+- **Parameters**
+  - `config: ApiProxySyncConfiguration` – Synchronous module configuration
+    - `isGlobal?: boolean` – Register the module globally
+    - `jwtStrategyConfig?: JwtStrategyConfig` – Enable JWT (JWKS) authentication
+    - `kratosStrategyConfig?: KratosStrategyConfig` – Enable Ory Kratos authentication
+- **Returns**
+  - `DynamicModule` – NestJS dynamic module
 
-##### kratosPublicUrl (Kratos)
+### `ApiProxyModule.registerAsync(options)`
 
-Base URL of your Ory Kratos public API (e.g. `http://localhost:4433`). The strategy validates sessions via the Kratos `toSession` API using either the `Authorization: Bearer <session_token>` header or session cookies.
+Registers the API proxy module with asynchronous configuration. Behavior matches Nest custom providers; one of `useClass`, `useExisting`, or `useFactory` is required.
 
-##### jsonWebTokenOptions (JWT)
+- **Parameters**
+  - `options: ApiProxyAsyncConfiguration` – Async module configuration (extends `Pick<ModuleMetadata, "imports">`)
+    - `imports?: ModuleMetadata["imports"]` – Modules to import
+    - `useExisting?: Type<ApiProxyConfigurationFactory>` – Use existing configuration factory
+    - `useClass?: Type<ApiProxyConfigurationFactory>` – Use class as configuration factory
+    - `useFactory?: (...args: any[]) => ApiProxyConfiguration | Promise<ApiProxyConfiguration>` – Factory function
+    - `inject?: any[]` – Tokens to inject into the factory
+    - `extraProviders?: Provider[]` – Additional providers
+    - `isGlobal?: boolean` – Register the module globally
+- **Returns**
+  - `DynamicModule` – NestJS dynamic module
+- **Throws**
+  - `NotFoundException` – When none of `useClass`, `useExisting`, or `useFactory` is specified
 
-`VerifyOptions` is a type imported from `jsonwebtoken` package.
+### `UseJwtGuard()`
+
+Returns a guard that applies JWT (Passport) authentication. Use on controllers when `defaultStrategy` is `"jwt"` or pass the strategy explicitly.
+
+- **Returns**
+  - Decorator that applies `AuthGuard("jwt")`
+
+### `UseKratosGuard()`
+
+Returns a guard that applies Ory Kratos (Passport) authentication. Validates via Kratos `toSession` (cookie or `Authorization: Bearer <session_token>`). Use on controllers when `defaultStrategy` is `"kratos"` or pass the strategy explicitly.
+
+- **Returns**
+  - Decorator that applies `AuthGuard("kratos")`
+
+### `CqrsClientFactory`
+
+Injectable factory that creates a CQRS API client bound to the current request (for token forwarding).
+
+- **Constructor**
+  - `httpService: HttpService` – From `"@nestjs/axios"`
+  - `request: Request` – Current request (injected via `REQUEST`)
+- **Methods**
+  - `create(getApiEndpoint)` – Returns an `Api` instance using the given endpoint getter
+    - **Parameters**
+      - `getApiEndpoint: EndpointGetter` – Function that returns the API base URL for a given type
+    - **Returns**
+      - `CqrsClient` – API client instance
+
+### `Api`
+
+Implements `CqrsClient`. Sends requests to the API using the request’s auth token.
+
+- **Constructor**
+  - `httpService: HttpService` – HTTP service instance
+  - `request: Request` – Current request
+  - `getApiEndpoint: EndpointGetter` – Function that returns the API base URL for a given type
+- **Methods**
+  - `createQuery<TQuery, TResult>(type)` – Returns a function that runs a query
+    - **Parameters**
+      - `type: string` – Query type (used to resolve endpoint)
+    - **Returns**
+      - `(dto: TQuery) => Promise<TResult>`
+  - `createCommand<TCommand, TErrorCodes>(type)` – Returns a function that runs a command
+    - **Parameters**
+      - `type: string` – Command type (used to resolve endpoint)
+    - **Returns**
+      - `(dto: TCommand) => Promise<CommandResult<TErrorCodes>>`
+
+### `CqrsClient`
+
+Interface for CQRS API clients: `createQuery(type)` and `createCommand(type)`.
+
+### `EndpointGetter`
+
+Type: `(type: string) => string`. Function that returns the API base URL for a given `type`.
+
+### `JwtStrategy`
+
+Passport strategy for JWT (JWKS) authentication.
+
+- **Constructor**
+  - `jwtStrategyConfig: JwtStrategyConfig` – JWT strategy configuration
+    - `jwksUri: string` – JWKS endpoint URL
+    - `jsonWebTokenOptions?: VerifyOptions` – Options from `"jsonwebtoken"` (e.g. `audience`, `issuer`)
+
+### `KratosStrategy`
+
+Passport strategy for Ory Kratos session validation (cookie or Bearer token).
+
+- **Constructor**
+  - `kratosStrategyConfig: KratosStrategyConfig` – Kratos strategy configuration
+    - `kratosPublicUrl: string` – Ory Kratos public API base URL (e.g. `http://localhost:4433`)
+
+### Types
+
+- **`ApiProxySyncConfiguration`** – `ApiProxyConfiguration & { isGlobal?: boolean }`
+- **`ApiProxyConfiguration`** – `{ jwtStrategyConfig?: JwtStrategyConfig; kratosStrategyConfig?: KratosStrategyConfig }`
+- **`ApiProxyAsyncConfiguration`** – Async module options (see `registerAsync`)
+- **`ApiProxyConfigurationFactory`** – `{ createApiProxyConfiguration(): ApiProxyConfiguration | Promise<ApiProxyConfiguration> }`
+- **`JwtStrategyConfig`** – `{ jwksUri: string; jsonWebTokenOptions?: VerifyOptions }` (`VerifyOptions` from `"jsonwebtoken"`)
+- **`KratosStrategyConfig`** – `{ kratosPublicUrl: string }` (Ory Kratos public API base URL)
+- **`KratosUser`** – `{ session: Session; sessionToken?: string }` (from `@ory/client`)
+
+### Symbols
+
+- **`InstanceToken`** – Injection token for the proxy instance
+- **`ApiAndAuthConfigurationToken`** – Injection token for API/auth configuration
+
+## Usage Examples
+
+### Register module (sync, JWT)
 
 ```ts
-export interface VerifyOptions {
-    algorithms?: Algorithm[] | undefined;
-    audience?: string | RegExp | Array<string | RegExp> | undefined;
-    clockTimestamp?: number | undefined;
-    clockTolerance?: number | undefined;
-    /** return an object with the decoded `{ payload, header, signature }` instead of only the usual content of the payload. */
-    complete?: boolean | undefined;
-    issuer?: string | string[] | undefined;
-    ignoreExpiration?: boolean | undefined;
-    ignoreNotBefore?: boolean | undefined;
-    jwtid?: string | undefined;
-    /**
-     * If you want to check `nonce` claim, provide a string value here.
-     * It is used on Open ID for the ID Tokens. ([Open ID implementation notes](https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes))
-     */
-    nonce?: string | undefined;
-    subject?: string | undefined;
-    maxAge?: string | number | undefined;
-}
-```
+import { Module } from "@nestjs/common";
+import { PassportModule } from "@nestjs/passport";
+import { ApiProxyModule } from "@leancodepl/api-proxy";
 
-### register example
-
-```ts
-const apiProxySyncConfig: ApiProxySyncConfiguration = {
-    isGlobal: false,
-    jwtStrategyConfig: {
-        jwksUri: "https://localhost:3333/auth/.well-known/openid-configuration/jwks",
-        jsonWebTokenOptions: {
-            audience: "internal_api",
-        },
-    },
+const config = {
+  isGlobal: false,
+  jwtStrategyConfig: {
+    jwksUri: "https://localhost:3333/auth/.well-known/openid-configuration/jwks",
+    jsonWebTokenOptions: { audience: "internal_api" },
+  },
 };
 
 @Module({
-    imports: [ApiProxyModule.register(apiProxySyncConfig), PassportModule.register({ defaultStrategy: "jwt" })],
-    controllers: [],
-    providers: [],
+  imports: [
+    ApiProxyModule.register(config),
+    PassportModule.register({ defaultStrategy: "jwt" }),
+  ],
 })
 export class AppModule {}
 ```
 
-With Kratos only:
+### Register module (sync, Kratos)
 
 ```ts
-const apiProxySyncConfig: ApiProxySyncConfiguration = {
-    isGlobal: false,
-    kratosStrategyConfig: {
-        kratosPublicUrl: "http://localhost:4433",
-    },
-};
+import { Module } from "@nestjs/common";
+import { PassportModule } from "@nestjs/passport";
+import { ApiProxyModule } from "@leancodepl/api-proxy";
 
 @Module({
-    imports: [ApiProxyModule.register(apiProxySyncConfig), PassportModule.register({ defaultStrategy: "kratos" })],
-    controllers: [],
-    providers: [],
-})
-export class AppModule {}
-```
-
-With both JWT and Kratos (choose `defaultStrategy: "jwt"` or `"kratos"` as needed):
-
-```ts
-const apiProxySyncConfig: ApiProxySyncConfiguration = {
-    isGlobal: false,
-    jwtStrategyConfig: { jwksUri: "https://...", jsonWebTokenOptions: { audience: "internal_api" } },
-    kratosStrategyConfig: { kratosPublicUrl: "http://localhost:4433" },
-};
-
-@Module({
-    imports: [ApiProxyModule.register(apiProxySyncConfig), PassportModule.register({ defaultStrategy: "kratos" })],
-    controllers: [],
-    providers: [],
-})
-export class AppModule {}
-```
-
-### registerAsync
-
-```ts
-ApiProxy.registerAsync(options: ApiProxyAsyncConfiguration): DynamicModule
-
-export type ApiProxyConfiguration = {
-    jwtStrategyConfig?: JwtStrategyConfig;
-    kratosStrategyConfig?: KratosStrategyConfig;
-};
-
-export interface ApiProxyAsyncConfiguration extends Pick<ModuleMetadata, "imports"> {
-    useExisting?: Type<ApiProxyConfigurationFactory>;
-    useClass?: Type<ApiProxyConfigurationFactory>;
-    useFactory?: (...args: any[]) => Promise<ApiProxyConfiguration> | ApiProxyConfiguration;
-    inject?: any[];
-    extraProviders?: Provider[];
-    isGlobal?: boolean;
-}
-
-export interface ApiProxyConfigurationFactory {
-    createApiProxyConfiguration(): Promise<ApiProxyConfiguration> | ApiProxyConfiguration;
-}
-```
-
-Every property will work the same as in the
-[nestjs documentation](https://docs.nestjs.com/fundamentals/custom-providers#class-providers-useclass). If none of
-useExisting, useClass and useFactory is specified, method will throw a `NotFoundException`.
-
-### registerAsync example
-
-```ts
-const apiProxyAsyncConfig: ApiProxyAsyncConfiguration = {
-    isGlobal: false,
-    imports: [ConfigModule],
-    useFactory: (configService: ConfigService) => ({
-        jwtStrategyConfig: {
-            jwksUri: configService.get("JWKS_URI") ?? "",
-            jsonWebTokenOptions: {
-                audience: "internal_api",
-            },
-        },
+  imports: [
+    ApiProxyModule.register({
+      isGlobal: false,
+      kratosStrategyConfig: { kratosPublicUrl: "http://localhost:4433" },
     }),
-    inject: [ConfigService],
-};
-
-@Module({
-    imports: [
-        ConfigModule.forRoot(),
-        ApiProxyModule.registerAsync(apiProxyAsyncConfig),
-        PassportModule.register({ defaultStrategy: "jwt" }),
-    ],
-    controllers: [],
-    providers: [],
+    PassportModule.register({ defaultStrategy: "kratos" }),
+  ],
 })
 export class AppModule {}
 ```
 
-With Kratos (and optionally JWT):
+### Register module (async, with ConfigService)
 
 ```ts
-const apiProxyAsyncConfig: ApiProxyAsyncConfiguration = {
-    isGlobal: false,
-    imports: [ConfigModule],
-    useFactory: (configService: ConfigService) => ({
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { PassportModule } from "@nestjs/passport";
+import { ApiProxyModule } from "@leancodepl/api-proxy";
+
+@Module({
+  imports: [
+    ConfigModule.forRoot(),
+    ApiProxyModule.registerAsync({
+      isGlobal: false,
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
         jwtStrategyConfig: {
-            jwksUri: configService.get("JWKS_URI") ?? "",
-            jsonWebTokenOptions: { audience: "internal_api" },
+          jwksUri: config.get("JWKS_URI") ?? "",
+          jsonWebTokenOptions: { audience: "internal_api" },
         },
-        kratosStrategyConfig: {
-            kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "http://localhost:4433",
-        },
+      }),
+      inject: [ConfigService],
     }),
-    inject: [ConfigService],
-};
-
-@Module({
-    imports: [
-        ConfigModule.forRoot(),
-        ApiProxyModule.registerAsync(apiProxyAsyncConfig),
-        PassportModule.register({ defaultStrategy: "kratos" }),
-    ],
-    controllers: [],
-    providers: [],
+    PassportModule.register({ defaultStrategy: "jwt" }),
+  ],
 })
 export class AppModule {}
 ```
 
-### UseJwtGuard decorator
-
-For JWT-based authorization, use the `UseJwtGuard` decorator on your controller. Ensure `PassportModule` uses `defaultStrategy: "jwt"` or pass the strategy explicitly.
+### Use JWT guard on a controller
 
 ```ts
+import { Controller } from "@nestjs/common";
 import { UseJwtGuard } from "@leancodepl/api-proxy";
 
 @UseJwtGuard()
 @Controller()
-export class AppController {
-    constructor() {}
-}
+export class AppController {}
 ```
 
-### UseKratosGuard decorator
-
-For Ory Kratos–based authorization, use the `UseKratosGuard` decorator on your controller. Ensure `PassportModule` uses `defaultStrategy: "kratos"` or pass the strategy explicitly.
-
-The guard validates the request using the Kratos `toSession` API. Sessions can be provided via:
-
-- **Cookie** – `cookie` header (e.g. browser session cookies)
-- **Bearer token** – `Authorization: Bearer <session_token>` header
-
-The validated user is available as `req.user` and has type `KratosUser` (`{ session: Session; sessionToken?: string }`).
+### Use Kratos guard on a controller
 
 ```ts
+import { Controller } from "@nestjs/common";
 import { UseKratosGuard } from "@leancodepl/api-proxy";
 
 @UseKratosGuard()
 @Controller("kratos")
-export class KratosController {
-    constructor() {}
-}
+export class KratosController {}
 ```
 
-### Providing a CqrsClient example
+### Provide a CQRS client and use it
 
 ```ts
-import Client from "./Client";
+import { Injectable, Module } from "@nestjs/common";
+import { ApiProxyModule, CqrsClientFactory } from "@leancodepl/api-proxy";
+import { PassportModule } from "@nestjs/passport";
+import Client from "./Client"; // from contractsgenerator-typescript
 
 @Injectable()
 export class CqrsClient1 {
-    client;
-    constructor(cqrsClientFactory: CqrsClientFactory) {
-        this.client = Client(cqrsClientFactory.create(CqrsClient1.getApiEndpoint));
-    }
-
-    static getApiEndpoint(type: string) {
-        return `http://localhost:3333/api/${type}`;
-    }
+  client;
+  constructor(cqrsClientFactory: CqrsClientFactory) {
+    this.client = Client(cqrsClientFactory.create((type) => `http://localhost:3333/api/${type}`));
+  }
 }
-```
 
-Into your `Client` function, generated with
-[contractsgenerator-typescript](https://www.npmjs.com/package/@leancodepl/contractsgenerator-typescript), you have to
-pass the instance of `CqrsClient`, which can be created using `cqrsClientFactory.create` method. As args of this method
-you have to pass a function with args `(type: string)`, which will be used for creating endpoint's url.
-
-```ts
-@Injectable()
-export class Query1ComponentService {
-    constructor(private client: CqrsClient1) {}
-
-    async getComponent() {
-        const test = await this.client.client.TestQueries.TestQuery1({});
-        return <SampleComponent testString={test.test} />;
-    }
-}
-```
-
-Then you will be able to use your client's queries and commands.
-
-Remember to add those classes as providers of your module.
-
-```ts
 @Module({
-    imports: [ApiProxyModule.register(apiAndAuthConfig), PassportModule.register({ defaultStrategy: "jwt" })],
-    providers: [CqrsClient1, Query1ComponentService],
+  imports: [
+    ApiProxyModule.register({ jwtStrategyConfig: { jwksUri: "https://..." } }),
+    PassportModule.register({ defaultStrategy: "jwt" }),
+  ],
+  providers: [CqrsClient1],
 })
 export class AppModule {}
 ```
+
+## Configuration
+
+- **JWT:** Set `jwksUri` and optionally `jsonWebTokenOptions` (e.g. `audience`, `issuer`) from `"jsonwebtoken"` `VerifyOptions`.
+- **Kratos:** Set `kratosPublicUrl` to your Kratos public API base (e.g. `http://localhost:4433`). The strategy uses the Kratos `toSession` API with cookie or `Authorization: Bearer <session_token>`.
