@@ -3,6 +3,11 @@
 Used for authentication and communication with a [contractsgenerator](https://github.com/leancodepl/contractsgenerator)
 based api.
 
+Supports two authentication strategies:
+
+- **JWT** – e.g. for OAuth2/OIDC providers (JWKS)
+- **Ory Kratos** – for [Ory Kratos](https://www.ory.sh/docs/kratos)-based identity management (session validation via cookie or Bearer token)
+
 ## Usage
 
 ### register
@@ -10,16 +15,29 @@ based api.
 ```ts
 import { VerifyOptions } from "jsonwebtoken";
 
-ApiProxy.register({ isGlobal, jwtStrategyConfig }: ApiProxySyncConfiguration): DynamicModule
+ApiProxy.register({ isGlobal, jwtStrategyConfig, kratosStrategyConfig }: ApiProxySyncConfiguration): DynamicModule
 
 export type ApiProxySyncConfiguration = {
     isGlobal?: boolean;
-    jwtStrategyConfig: JwtStrategyConfig;
+    /** Optional. Provide to use JWT (e.g. JWKS) authentication. */
+    jwtStrategyConfig?: JwtStrategyConfig;
+    /** Optional. Provide to use Ory Kratos authentication. */
+    kratosStrategyConfig?: KratosStrategyConfig;
 };
 
 export type JwtStrategyConfig = {
     jwksUri: string;
     jsonWebTokenOptions?: VerifyOptions;
+};
+
+export type KratosStrategyConfig = {
+    /** Public URL of your Ory Kratos instance (e.g. http://localhost:4433). */
+    kratosPublicUrl: string;
+};
+
+export type KratosUser = {
+    session: Session;  // from @ory/client
+    sessionToken?: string;
 };
 ```
 
@@ -31,7 +49,11 @@ You can specify if you want to register a module globally.
 
 Uri of your auth jwks.
 
-##### jsonWebTokenOptions
+##### kratosPublicUrl (Kratos)
+
+Base URL of your Ory Kratos public API (e.g. `http://localhost:4433`). The strategy validates sessions via the Kratos `toSession` API using either the `Authorization: Bearer <session_token>` header or session cookies.
+
+##### jsonWebTokenOptions (JWT)
 
 `VerifyOptions` is a type imported from `jsonwebtoken` package.
 
@@ -78,13 +100,49 @@ const apiProxySyncConfig: ApiProxySyncConfiguration = {
 export class AppModule {}
 ```
 
+With Kratos only:
+
+```ts
+const apiProxySyncConfig: ApiProxySyncConfiguration = {
+    isGlobal: false,
+    kratosStrategyConfig: {
+        kratosPublicUrl: "http://localhost:4433",
+    },
+};
+
+@Module({
+    imports: [ApiProxyModule.register(apiProxySyncConfig), PassportModule.register({ defaultStrategy: "kratos" })],
+    controllers: [],
+    providers: [],
+})
+export class AppModule {}
+```
+
+With both JWT and Kratos (choose `defaultStrategy: "jwt"` or `"kratos"` as needed):
+
+```ts
+const apiProxySyncConfig: ApiProxySyncConfiguration = {
+    isGlobal: false,
+    jwtStrategyConfig: { jwksUri: "https://...", jsonWebTokenOptions: { audience: "internal_api" } },
+    kratosStrategyConfig: { kratosPublicUrl: "http://localhost:4433" },
+};
+
+@Module({
+    imports: [ApiProxyModule.register(apiProxySyncConfig), PassportModule.register({ defaultStrategy: "kratos" })],
+    controllers: [],
+    providers: [],
+})
+export class AppModule {}
+```
+
 ### registerAsync
 
 ```ts
 ApiProxy.registerAsync(options: ApiProxyAsyncConfiguration): DynamicModule
 
 export type ApiProxyConfiguration = {
-    jwtStrategyConfig: JwtStrategyConfig;
+    jwtStrategyConfig?: JwtStrategyConfig;
+    kratosStrategyConfig?: KratosStrategyConfig;
 };
 
 export interface ApiProxyAsyncConfiguration extends Pick<ModuleMetadata, "imports"> {
@@ -134,9 +192,39 @@ const apiProxyAsyncConfig: ApiProxyAsyncConfiguration = {
 export class AppModule {}
 ```
 
+With Kratos (and optionally JWT):
+
+```ts
+const apiProxyAsyncConfig: ApiProxyAsyncConfiguration = {
+    isGlobal: false,
+    imports: [ConfigModule],
+    useFactory: (configService: ConfigService) => ({
+        jwtStrategyConfig: {
+            jwksUri: configService.get("JWKS_URI") ?? "",
+            jsonWebTokenOptions: { audience: "internal_api" },
+        },
+        kratosStrategyConfig: {
+            kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "http://localhost:4433",
+        },
+    }),
+    inject: [ConfigService],
+};
+
+@Module({
+    imports: [
+        ConfigModule.forRoot(),
+        ApiProxyModule.registerAsync(apiProxyAsyncConfig),
+        PassportModule.register({ defaultStrategy: "kratos" }),
+    ],
+    controllers: [],
+    providers: [],
+})
+export class AppModule {}
+```
+
 ### UseJwtGuard decorator
 
-For the authorization to work, you have to use the `UseJwtGuard` decorator on your controller.
+For JWT-based authorization, use the `UseJwtGuard` decorator on your controller. Ensure `PassportModule` uses `defaultStrategy: "jwt"` or pass the strategy explicitly.
 
 ```ts
 import { UseJwtGuard } from "@leancodepl/api-proxy";
@@ -144,6 +232,27 @@ import { UseJwtGuard } from "@leancodepl/api-proxy";
 @UseJwtGuard()
 @Controller()
 export class AppController {
+    constructor() {}
+}
+```
+
+### UseKratosGuard decorator
+
+For Ory Kratos–based authorization, use the `UseKratosGuard` decorator on your controller. Ensure `PassportModule` uses `defaultStrategy: "kratos"` or pass the strategy explicitly.
+
+The guard validates the request using the Kratos `toSession` API. Sessions can be provided via:
+
+- **Cookie** – `cookie` header (e.g. browser session cookies)
+- **Bearer token** – `Authorization: Bearer <session_token>` header
+
+The validated user is available as `req.user` and has type `KratosUser` (`{ session: Session; sessionToken?: string }`).
+
+```ts
+import { UseKratosGuard } from "@leancodepl/api-proxy";
+
+@UseKratosGuard()
+@Controller("kratos")
+export class KratosController {
     constructor() {}
 }
 ```
