@@ -70,7 +70,7 @@ Injectable factory that creates a CQRS API client bound to the current request (
 
 ### `Api`
 
-Implements `CqrsClient`. Sends requests to the API using the request’s auth token.
+Implements `CqrsClient`. Sends requests to the API using the request’s auth data: Bearer token (from JWT or Kratos) and, when using Kratos, the session cookie (forwarded as `Cookie` header).
 
 - **Constructor**
   - `httpService: HttpService` – HTTP service instance
@@ -107,11 +107,13 @@ Passport strategy for JWT (JWKS) authentication.
 
 ### `KratosStrategy`
 
-Passport strategy for Ory Kratos session validation (cookie or Bearer token).
+Passport strategy for Ory Kratos session validation. Accepts either a cookie (from `Cookie` header) or a Bearer token (`Authorization: Bearer <session_token>`); at least one must be present. Validates via Kratos `toSession` and attaches `{ token, cookie }` to the request user for downstream forwarding.
 
 - **Constructor**
   - `kratosStrategyConfig: KratosStrategyConfig` – Kratos strategy configuration
     - `kratosPublicUrl: string` – Ory Kratos public API base URL (e.g. `http://localhost:4433`)
+- **`validate(req)`**
+  - **Returns** – `{ token?: string; cookie?: string }` – The session token and/or cookie string passed to the request (for use by `Api` when calling the backend)
 
 ### Types
 
@@ -121,7 +123,6 @@ Passport strategy for Ory Kratos session validation (cookie or Bearer token).
 - **`ApiProxyConfigurationFactory`** – `{ createApiProxyConfiguration(): ApiProxyConfiguration | Promise<ApiProxyConfiguration> }`
 - **`JwtStrategyConfig`** – `{ jwksUri: string; jsonWebTokenOptions?: VerifyOptions }` (`VerifyOptions` from `"jsonwebtoken"`)
 - **`KratosStrategyConfig`** – `{ kratosPublicUrl: string }` (Ory Kratos public API base URL)
-- **`KratosUser`** – `{ session: Session; sessionToken?: string }` (from `@ory/client`)
 
 ### Symbols
 
@@ -252,4 +253,4 @@ export class AppModule {}
 ## Configuration
 
 - **JWT:** Set `jwksUri` and optionally `jsonWebTokenOptions` (e.g. `audience`, `issuer`) from `"jsonwebtoken"` `VerifyOptions`.
-- **Kratos:** Set `kratosPublicUrl` to your Kratos public API base (e.g. `http://localhost:4433`). The strategy uses the Kratos `toSession` API with cookie or `Authorization: Bearer <session_token>`.
+- **Kratos:** Set `kratosPublicUrl` to your Kratos public API base (e.g. `http://localhost:4433`). The strategy uses the Kratos `toSession` API with cookie or `Authorization: Bearer <session_token>`. The `Api` service forwards both the session token (as Bearer) and the cookie to the backend when making CQRS requests.

@@ -1,16 +1,11 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { PassportStrategy } from "@nestjs/passport"
-import { Configuration, FrontendApi, Session } from "@ory/client"
+import { Configuration, FrontendApi } from "@ory/client"
 import { Strategy } from "passport-custom"
 import type { Request } from "express"
 
 export type KratosStrategyConfig = {
   kratosPublicUrl: string
-}
-
-export type KratosUser = {
-  session: Session
-  sessionToken?: string
 }
 
 const bearerPrefix = "Bearer "
@@ -43,22 +38,22 @@ export class KratosStrategy extends PassportStrategy(Strategy, "kratos") {
   }
 
   async validate(req: Request) {
-    const sessionToken = extractSessionTokenFromHeader(req)
-    const cookies = extractCookies(req)
+    const token = extractSessionTokenFromHeader(req)
+    const cookie = extractCookies(req)
 
-    if (!sessionToken && !cookies) {
+    if (!token && !cookie) {
       throw new UnauthorizedException()
     }
 
     try {
       await this.kratosClient.toSession({
-        xSessionToken: sessionToken || undefined,
-        cookie: cookies,
+        xSessionToken: token,
+        cookie: cookie,
       })
 
       return {
-        token: sessionToken,
-        cookie: cookies,
+        token,
+        cookie,
       }
     } catch {
       throw new UnauthorizedException()
