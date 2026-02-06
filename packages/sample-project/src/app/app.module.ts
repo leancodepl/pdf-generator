@@ -32,14 +32,14 @@ import { QueryController } from "./query.controller"
       useFactory: async (configService: ConfigService) => ({
         // JWT authentication (e.g., for OAuth2/OIDC providers)
         jwtStrategyConfig: {
-          jwksUri: configService.get("JWKS_URI") ?? "https://localhost:3333/auth/.well-known/openid-configuration/jwks",
+          jwksUri: configService.get("JWKS_URI") ?? "",
           jsonWebTokenOptions: {
             audience: "internal_api",
           },
         },
         // Ory Kratos authentication (for Kratos-based identity management)
         kratosStrategyConfig: {
-          kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "http://localhost:4433",
+          kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "",
         },
       }),
       inject: [ConfigService],
