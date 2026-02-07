@@ -19,8 +19,7 @@ function extractSessionTokenFromHeader(req: Request) {
 }
 
 function extractCookies(req: Request) {
-  const cookieHeader = req.headers.cookie
-  return cookieHeader || undefined
+  return req.headers.cookie || undefined
 }
 
 @Injectable()
