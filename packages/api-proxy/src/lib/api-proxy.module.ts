@@ -2,12 +2,20 @@ import { HttpModule } from "@nestjs/axios"
 import { DynamicModule, Module, ModuleMetadata, NotFoundException, Provider, Type } from "@nestjs/common"
 import { CqrsClientFactory } from "./cqrsClientFactory"
 import { JwtStrategy, JwtStrategyConfig } from "./jwt.strategy"
+import { KratosStrategy, KratosStrategyConfig } from "./kratos.strategy"
 
 export const InstanceToken = Symbol("Instance")
 export const ApiAndAuthConfigurationToken = Symbol("ApiAndAuthConfiguration")
 
 export type ApiProxyConfiguration = {
-  jwtStrategyConfig: JwtStrategyConfig
+  /**
+   * JWT strategy configuration. Optional - only provide if you want to use JWT authentication.
+   */
+  jwtStrategyConfig?: JwtStrategyConfig
+  /**
+   * Kratos strategy configuration. Optional - only provide if you want to use Ory Kratos authentication.
+   */
+  kratosStrategyConfig?: KratosStrategyConfig
 }
 
 export type ApiProxySyncConfiguration = ApiProxyConfiguration & {
@@ -29,7 +37,26 @@ export interface ApiProxyAsyncConfiguration extends Pick<ModuleMetadata, "import
 
 @Module({})
 export class ApiProxyModule {
-  static register({ isGlobal, jwtStrategyConfig }: ApiProxySyncConfiguration): DynamicModule {
+  static register({ isGlobal, jwtStrategyConfig, kratosStrategyConfig }: ApiProxySyncConfiguration): DynamicModule {
+    const providers: Provider[] = [CqrsClientFactory]
+    const exports: (symbol | Type)[] = [CqrsClientFactory]
+
+    if (jwtStrategyConfig) {
+      providers.push({
+        provide: JwtStrategy,
+        useFactory: () => new JwtStrategy(jwtStrategyConfig),
+      })
+      exports.push(JwtStrategy)
+    }
+
+    if (kratosStrategyConfig) {
+      providers.push({
+        provide: KratosStrategy,
+        useFactory: () => new KratosStrategy(kratosStrategyConfig),
+      })
+      exports.push(KratosStrategy)
+    }
+
     return {
       module: ApiProxyModule,
       global: isGlobal,
@@ -38,14 +65,8 @@ export class ApiProxyModule {
           responseType: "json",
         }),
       ],
-      providers: [
-        {
-          provide: JwtStrategy,
-          useFactory: () => new JwtStrategy(jwtStrategyConfig),
-        },
-        CqrsClientFactory,
-      ],
-      exports: [JwtStrategy, CqrsClientFactory],
+      providers,
+      exports,
     }
   }
 
@@ -61,16 +82,37 @@ export class ApiProxyModule {
       ],
       providers: [
         ...this.createAsyncProviders(options),
-        {
-          provide: JwtStrategy,
-          useFactory: (config: ApiProxyConfiguration) => new JwtStrategy(config.jwtStrategyConfig),
-          inject: [ApiAndAuthConfigurationToken],
-        },
+        ...this.createStrategyProviders(),
         CqrsClientFactory,
         ...(options.extraProviders || []),
       ],
-      exports: [JwtStrategy, CqrsClientFactory],
+      exports: [JwtStrategy, KratosStrategy, CqrsClientFactory],
     }
+  }
+
+  private static createStrategyProviders(): Provider[] {
+    return [
+      {
+        provide: JwtStrategy,
+        useFactory: (config: ApiProxyConfiguration) => {
+          if (config.jwtStrategyConfig) {
+            return new JwtStrategy(config.jwtStrategyConfig)
+          }
+          return null
+        },
+        inject: [ApiAndAuthConfigurationToken],
+      },
+      {
+        provide: KratosStrategy,
+        useFactory: (config: ApiProxyConfiguration) => {
+          if (config.kratosStrategyConfig) {
+            return new KratosStrategy(config.kratosStrategyConfig)
+          }
+          return null
+        },
+        inject: [ApiAndAuthConfigurationToken],
+      },
+    ]
   }
 
   private static createAsyncProviders(options: ApiProxyAsyncConfiguration): Provider[] {

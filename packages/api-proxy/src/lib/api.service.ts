@@ -25,12 +25,13 @@ export class Api implements CqrsClient {
   }
 
   private run<TResult>(url: string, data: any): Promise<TResult> {
-    const token: string = (this.request as any).user?.token
+    const token: string | undefined = (this.request as any).user?.token
+    const cookie: string | undefined = (this.request as any).user?.cookie
 
     return firstValueFrom(
       this.httpService
         .post<TResult>(url, data, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
         })
         .pipe(map(response => response.data)),
     ).catch(e => {
