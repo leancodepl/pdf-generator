@@ -1,8 +1,10 @@
 import { HttpModule } from "@nestjs/axios"
 import { DynamicModule, Module, ModuleMetadata, NotFoundException, Provider, Type } from "@nestjs/common"
+import { createJsonLogger } from "@leancodepl/logger"
 import { CqrsClientFactory } from "./cqrsClientFactory"
 import { JwtStrategy, JwtStrategyConfig } from "./jwt.strategy"
 import { KratosStrategy, KratosStrategyConfig } from "./kratos.strategy"
+import { apiProxyLoggerSymbol, defaultLogger } from "./logger"
 
 export const InstanceToken = Symbol("Instance")
 export const ApiAndAuthConfigurationToken = Symbol("ApiAndAuthConfiguration")
@@ -16,6 +18,10 @@ export type ApiProxyConfiguration = {
    * Kratos strategy configuration. Optional - only provide if you want to use Ory Kratos authentication.
    */
   kratosStrategyConfig?: KratosStrategyConfig
+  /**
+   * Logger. Optional - only provide if you want to use a custom logger.
+   */
+  logger?: ReturnType<typeof createJsonLogger>
 }
 
 export type ApiProxySyncConfiguration = ApiProxyConfiguration & {
@@ -37,7 +43,12 @@ export interface ApiProxyAsyncConfiguration extends Pick<ModuleMetadata, "import
 
 @Module({})
 export class ApiProxyModule {
-  static register({ isGlobal, jwtStrategyConfig, kratosStrategyConfig }: ApiProxySyncConfiguration): DynamicModule {
+  static register({
+    isGlobal,
+    jwtStrategyConfig,
+    kratosStrategyConfig,
+    logger,
+  }: ApiProxySyncConfiguration): DynamicModule {
     const providers: Provider[] = [CqrsClientFactory]
     const exports: (symbol | Type)[] = [CqrsClientFactory]
 
@@ -56,6 +67,11 @@ export class ApiProxyModule {
       })
       exports.push(KratosStrategy)
     }
+
+    providers.push({
+      provide: apiProxyLoggerSymbol,
+      useValue: logger ?? defaultLogger,
+    })
 
     return {
       module: ApiProxyModule,
@@ -110,6 +126,11 @@ export class ApiProxyModule {
           }
           return null
         },
+        inject: [ApiAndAuthConfigurationToken],
+      },
+      {
+        provide: apiProxyLoggerSymbol,
+        useFactory: (config: ApiProxyConfiguration) => config.logger ?? defaultLogger,
         inject: [ApiAndAuthConfigurationToken],
       },
     ]

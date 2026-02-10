@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common"
 import { firstValueFrom } from "rxjs"
 import { map } from "rxjs/operators"
 import { CommandResult } from "@leancodepl/cqrs-client-base"
+import { createJsonLogger } from "@leancodepl/logger"
 import { CqrsClient } from "./cqrsClient"
 import type { Request } from "express"
 
@@ -14,6 +15,7 @@ export class Api implements CqrsClient {
     private readonly httpService: HttpService,
     private readonly request: Request,
     private readonly getApiEndpoint: EndpointGetter,
+    private readonly logger: ReturnType<typeof createJsonLogger>,
   ) {}
 
   createQuery<TQuery, TResult>(type: string) {
@@ -34,9 +36,14 @@ export class Api implements CqrsClient {
           headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
         })
         .pipe(map(response => response.data)),
-    ).catch(e => {
-      console.error("Request with url ", url, "and data", data, "failed")
-      return Promise.reject(e)
-    })
+    )
+      .then(result => {
+        this.logger.info("Request succeeded", url)
+        return result
+      })
+      .catch(e => {
+        this.logger.error("Request failed", url, e?.message ?? e)
+        return Promise.reject(e)
+      })
   }
 }

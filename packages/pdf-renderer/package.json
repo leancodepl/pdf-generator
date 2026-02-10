@@ -13,6 +13,7 @@
   "author": "LeanCode",
   "license": "Apache-2.0",
   "dependencies": {
+    "@leancodepl/logger": ">=9.7.4",
     "@nestjs/common": ">=11.0.0",
     "puppeteer": ">=24.0.0",
     "puppeteer-cluster": ">=0.25.0",

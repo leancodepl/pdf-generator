@@ -1,9 +1,10 @@
-import { Controller, Get, Res } from "@nestjs/common"
+import { Controller, Get, Inject, Res } from "@nestjs/common"
 import { PdfRenderer } from "@leancodepl/pdf-renderer"
 import { BaseInvoiceService } from "./components-services/baseInvoice.service"
 import { InvoiceTemplateService } from "./components-services/invoiceTemplate.service"
 import { PolishInvoiceTemplateService } from "./components-services/polishInvoiceTemplate.service"
 import { SampleComponentService } from "./components-services/sampleComponent.service"
+import { type AppLogger, LOGGER } from "./logger"
 import type { Response } from "express"
 
 @Controller("test")
@@ -15,10 +16,12 @@ export class AppController {
     private readonly baseInvoiceService: BaseInvoiceService,
     private readonly invoiceTemplateService: InvoiceTemplateService,
     private readonly polishInvoiceTemplateService: PolishInvoiceTemplateService,
+    @Inject(LOGGER) private readonly logger: AppLogger,
   ) {}
 
   @Get("pdf")
   async samplePdf(@Res() res: Response) {
+    this.logger.info("Generating sample PDF")
     const stream = await this.pdfRenderer
       .generatePdf({ element: this.sampleComponentService.getComponent() })
       .asStream()
@@ -33,6 +36,7 @@ export class AppController {
 
   @Get("png")
   async samplePng(@Res() res: Response) {
+    this.logger.info("Generating sample PNG")
     const buffer = await this.pdfRenderer
       .generateImage({ element: this.sampleComponentService.getComponent() })
       .asBuffer()
@@ -47,6 +51,7 @@ export class AppController {
 
   @Get("base-invoice")
   async baseInvoice(@Res() res: Response) {
+    this.logger.info("Generating base invoice PDF")
     const stream = await this.pdfRenderer.generatePdf({ element: this.baseInvoiceService.getComponent() }).asStream()
 
     const filename = "base-invoice.pdf"
@@ -59,6 +64,7 @@ export class AppController {
 
   @Get("invoice-template")
   async invoiceTemplate(@Res() res: Response) {
+    this.logger.info("Generating invoice template PDF")
     const stream = await this.pdfRenderer
       .generatePdf({ element: this.invoiceTemplateService.getComponent() })
       .asStream()
@@ -73,6 +79,7 @@ export class AppController {
 
   @Get("polish-invoice")
   async polishInvoice(@Res() res: Response) {
+    this.logger.info("Generating Polish invoice PDF")
     const stream = await this.polishInvoiceTemplateService.getRender().asStream()
 
     const filename = "polish-invoice.pdf"
@@ -85,6 +92,7 @@ export class AppController {
 
   @Get("polish-invoice-png")
   async polishInvoicePng(@Res() res: Response) {
+    this.logger.info("Generating Polish invoice PNG")
     const buffer = await this.polishInvoiceTemplateService.getRenderScreenshot().asBuffer()
 
     const filename = "polish-invoice.png"
