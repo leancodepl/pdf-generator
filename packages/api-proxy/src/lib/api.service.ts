@@ -26,24 +26,23 @@ export class Api implements CqrsClient {
     return (dto: TCommand) => this.run<CommandResult<TErrorCodes>>(this.getApiEndpoint(type), dto)
   }
 
-  private run<TResult>(url: string, data: any): Promise<TResult> {
+  private async run<TResult>(url: string, data: any): Promise<TResult> {
     const token: string | undefined = (this.request as any).user?.token
     const cookie: string | undefined = (this.request as any).user?.cookie
 
-    return firstValueFrom(
-      this.httpService
-        .post<TResult>(url, data, {
-          headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
-        })
-        .pipe(map(response => response.data)),
-    )
-      .then(result => {
-        this.logger.info("Request succeeded", url)
-        return result
-      })
-      .catch(e => {
-        this.logger.error("Request failed", url, e?.message ?? e)
-        return Promise.reject(e)
-      })
+    try {
+      const result = await firstValueFrom(
+        this.httpService
+          .post<TResult>(url, data, {
+            headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
+          })
+          .pipe(map(response => response.data)),
+      )
+      this.logger.info("Request succeeded", url)
+      return result
+    } catch (e) {
+      this.logger.error("Request failed", url, e?.message ?? e)
+      throw e
+    }
   }
 }
