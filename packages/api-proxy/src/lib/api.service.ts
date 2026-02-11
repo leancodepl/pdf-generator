@@ -41,7 +41,7 @@ export class Api implements CqrsClient {
       this.logger.info("Request succeeded", url)
       return result
     } catch (e) {
-      this.logger.error("Request failed", url, e?.message ?? e)
+      this.logger.error("Request failed", url, (e as any)?.message ?? e)
       throw e
     }
   }
