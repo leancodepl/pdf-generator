@@ -1,9 +1,13 @@
-import { Logger } from "@nestjs/common"
 import { NestFactory } from "@nestjs/core"
+import { createNestJsonLogger } from "@leancodepl/logger"
 import { AppModule } from "./app/app.module"
+import { logger } from "./app/logger"
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  logger.info("Starting application")
+  const app = await NestFactory.create(AppModule, {
+    logger: createNestJsonLogger(),
+  })
 
   app.enableShutdownHooks()
 
@@ -12,7 +16,10 @@ async function bootstrap() {
   const port = process.env.PORT || 3333
   await app.listen(port)
 
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`)
+  logger.success(`Application is running on: http://localhost:${port}/${globalPrefix}`)
 }
 
-bootstrap()
+bootstrap().catch(err => {
+  logger.error("Application failed to start", err)
+  process.exit(1)
+})

@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common"
 import { ConfigModule, ConfigService } from "@nestjs/config"
+import { APP_FILTER } from "@nestjs/core"
 import { PassportModule } from "@nestjs/passport"
 import path = require("path/posix")
 import { ApiProxyModule } from "@leancodepl/api-proxy"
@@ -13,10 +14,14 @@ import { Query1ComponentService } from "./components-services/query1Component.se
 import { SampleComponentService } from "./components-services/sampleComponent.service"
 import { fontsPath } from "./fonts"
 import { KratosController } from "./kratos.controller"
+import { type AppLogger, LOGGER, logger } from "./logger"
+import { LoggerModule } from "./logger.module"
 import { QueryController } from "./query.controller"
+import { UnauthorizedExceptionFilter } from "./unauthorized-exception.filter"
 
 @Module({
   imports: [
+    LoggerModule,
     ConfigModule.forRoot({
       ignoreEnvVars: true,
     }),
@@ -25,11 +30,12 @@ import { QueryController } from "./query.controller"
         isGlobal: true,
         regularFont: path.join(fontsPath, "open-sans-v17-latin-ext-regular.woff"),
         boldFont: path.join(fontsPath, "open-sans-v17-latin-ext-600.woff"),
+        logger,
       },
     }),
     ApiProxyModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      imports: [ConfigModule, LoggerModule],
+      useFactory: async (configService: ConfigService, appLogger: typeof logger) => ({
         // JWT authentication (e.g., for OAuth2/OIDC providers)
         jwtStrategyConfig: {
           jwksUri: configService.get("JWKS_URI") ?? "",
@@ -41,13 +47,19 @@ import { QueryController } from "./query.controller"
         kratosStrategyConfig: {
           kratosPublicUrl: configService.get("KRATOS_PUBLIC_URL") ?? "",
         },
+        logger: appLogger,
       }),
-      inject: [ConfigService],
+      inject: [ConfigService, LOGGER],
     }),
     PassportModule.register({ defaultStrategy: "jwt" }),
   ],
   controllers: [AppController, QueryController, KratosController],
   providers: [
+    {
+      provide: APP_FILTER,
+      useFactory: (logger: AppLogger) => new UnauthorizedExceptionFilter(logger),
+      inject: [LOGGER],
+    },
     SampleComponentService,
     BaseInvoiceService,
     InvoiceTemplateService,

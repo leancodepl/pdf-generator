@@ -1,4 +1,5 @@
 import { DynamicModule, Module } from "@nestjs/common"
+import { JsonLogger } from "@leancodepl/logger"
 import { PdfRendererModule } from "@leancodepl/pdf-renderer"
 import { moduleConfig, PolishInvoiceService } from ".."
 
@@ -7,6 +8,7 @@ type PolishInvoiceModuleConfig = {
     isGlobal?: boolean
     regularFont: Buffer | string
     boldFont: Buffer | string
+    logger?: JsonLogger
   }
 }
 
@@ -21,6 +23,7 @@ export class PolishInvoiceModule {
               regular: rendererConfig.regularFont,
               bold: rendererConfig.boldFont,
             }),
+            logger: rendererConfig.logger,
           }),
         ]
       : []

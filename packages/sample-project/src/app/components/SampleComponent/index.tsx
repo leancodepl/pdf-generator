@@ -8,9 +8,9 @@ const SampleComponent: React.FunctionComponent<{ testString?: string }> = ({ tes
 )
 
 const BlueDiv = styled.div`
-  background: lightskyblue;
-
+  background: black;
   color: white;
+  print-color-adjust: exact;
 `
 
 export default SampleComponent

@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common"
 import { firstValueFrom } from "rxjs"
 import { map } from "rxjs/operators"
 import { CommandResult } from "@leancodepl/cqrs-client-base"
+import { JsonLogger } from "@leancodepl/logger"
 import { CqrsClient } from "./cqrsClient"
 import type { Request } from "express"
 
@@ -14,6 +15,7 @@ export class Api implements CqrsClient {
     private readonly httpService: HttpService,
     private readonly request: Request,
     private readonly getApiEndpoint: EndpointGetter,
+    private readonly logger: JsonLogger,
   ) {}
 
   createQuery<TQuery, TResult>(type: string) {
@@ -24,19 +26,23 @@ export class Api implements CqrsClient {
     return (dto: TCommand) => this.run<CommandResult<TErrorCodes>>(this.getApiEndpoint(type), dto)
   }
 
-  private run<TResult>(url: string, data: any): Promise<TResult> {
+  private async run<TResult>(url: string, data: any): Promise<TResult> {
     const token: string | undefined = (this.request as any).user?.token
     const cookie: string | undefined = (this.request as any).user?.cookie
 
-    return firstValueFrom(
-      this.httpService
-        .post<TResult>(url, data, {
-          headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
-        })
-        .pipe(map(response => response.data)),
-    ).catch(e => {
-      console.error("Request with url ", url, "and data", data, "failed")
-      return Promise.reject(e)
-    })
+    try {
+      const result = await firstValueFrom(
+        this.httpService
+          .post<TResult>(url, data, {
+            headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
+          })
+          .pipe(map(response => response.data)),
+      )
+      this.logger.info("Request succeeded", url)
+      return result
+    } catch (e) {
+      this.logger.error("Request failed", url, (e as any)?.message ?? e)
+      throw e
+    }
   }
 }
