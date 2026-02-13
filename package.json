@@ -13,6 +13,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.9",
     "@ory/client": "^1.16.3",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@signpdf/placeholder-pdf-lib": "^3.3.0",
     "@signpdf/placeholder-plain": "^3.3.0",
     "@signpdf/signer-p12": "^3.3.0",
