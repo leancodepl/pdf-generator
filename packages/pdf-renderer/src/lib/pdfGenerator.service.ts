@@ -74,6 +74,36 @@ export class PdfGenerator {
     return (await page.screenshot(data)) as Buffer
   }
 
+  /**
+   * Takes a screenshot clipped to the bounding box of the first child element
+   * inside `<body>`, so that the resulting image matches the actual rendered
+   * component size (no extra viewport padding).
+   */
+  private static generateElementScreenshotTask: TaskFunction<{ html: string }, Buffer> = async ({ page, data }) => {
+    await page.setContent(data.html, {
+      timeout: 60000,
+      waitUntil: ["load", "domcontentloaded"],
+    })
+
+    const clip = await page.evaluate(() => {
+      const el = document.body.firstElementChild
+      if (!el) return null
+      const rect = el.getBoundingClientRect()
+      return {
+        x: rect.x,
+        y: rect.y,
+        width: Math.ceil(rect.width),
+        height: Math.ceil(rect.height),
+      }
+    })
+
+    return (await page.screenshot({
+      type: "png",
+      omitBackground: true,
+      ...(clip && clip.width > 0 && clip.height > 0 ? { clip } : { fullPage: true }),
+    })) as Buffer
+  }
+
   async generateBuffer(params: GeneratePdfPageParams) {
     return this.browserPool.run(PdfGenerator.generatePdfBufferTask, params)
   }
@@ -84,5 +114,13 @@ export class PdfGenerator {
 
   async generateScreenshot(params: GeneratePageScreenshotParams) {
     return this.browserPool.run(PdfGenerator.generateScreenshotTask, params)
+  }
+
+  /**
+   * Renders HTML and takes a PNG screenshot clipped to the first child element.
+   * The resulting image dimensions match the rendered component exactly.
+   */
+  async generateElementScreenshot(html: string): Promise<Buffer> {
+    return this.browserPool.run(PdfGenerator.generateElementScreenshotTask, { html })
   }
 }
