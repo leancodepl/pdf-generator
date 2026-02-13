@@ -1,6 +1,6 @@
 import { HttpModule } from "@nestjs/axios"
 import { DynamicModule, Module, ModuleMetadata, NotFoundException, Provider, Type } from "@nestjs/common"
-import { createJsonLogger } from "@leancodepl/logger"
+import { type JsonLogger } from "@leancodepl/logger"
 import { CqrsClientFactory } from "./cqrsClientFactory"
 import { JwtStrategy, JwtStrategyConfig } from "./jwt.strategy"
 import { KratosStrategy, KratosStrategyConfig } from "./kratos.strategy"
@@ -21,7 +21,7 @@ export type ApiProxyConfiguration = {
   /**
    * Logger. Optional - only provide if you want to use a custom logger.
    */
-  logger?: ReturnType<typeof createJsonLogger>
+  logger?: JsonLogger
 }
 
 export type ApiProxySyncConfiguration = ApiProxyConfiguration & {

@@ -1,12 +1,12 @@
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common"
 import { Cluster } from "puppeteer-cluster"
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster"
-import { createJsonLogger } from "@leancodepl/logger"
+import { JsonLogger } from "@leancodepl/logger"
 import { pdfRendererLoggerSymbol } from "./logger"
 
 @Injectable()
 export class BrowserPool implements OnModuleInit, OnModuleDestroy {
-  constructor(@Inject(pdfRendererLoggerSymbol) private readonly logger: ReturnType<typeof createJsonLogger>) {}
+  constructor(@Inject(pdfRendererLoggerSymbol) private readonly logger: JsonLogger) {}
 
   private cluster?: Cluster
 

@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common"
 import { firstValueFrom } from "rxjs"
 import { map } from "rxjs/operators"
 import { CommandResult } from "@leancodepl/cqrs-client-base"
-import { createJsonLogger } from "@leancodepl/logger"
+import { JsonLogger } from "@leancodepl/logger"
 import { CqrsClient } from "./cqrsClient"
 import type { Request } from "express"
 
@@ -15,7 +15,7 @@ export class Api implements CqrsClient {
     private readonly httpService: HttpService,
     private readonly request: Request,
     private readonly getApiEndpoint: EndpointGetter,
-    private readonly logger: ReturnType<typeof createJsonLogger>,
+    private readonly logger: JsonLogger,
   ) {}
 
   createQuery<TQuery, TResult>(type: string) {

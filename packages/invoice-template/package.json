@@ -13,7 +13,7 @@
   "author": "LeanCode",
   "license": "Apache-2.0",
   "dependencies": {
-    "@leancodepl/logger": ">=9.7.4",
+    "@leancodepl/logger": ">=10.0.2",
     "@nestjs/common": ">=11.0.0",
     "@swc/helpers": ">=0.5.0",
     "date-fns": ">=4.0.0",

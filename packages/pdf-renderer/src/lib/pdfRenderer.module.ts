@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from "@nestjs/common"
-import { createJsonLogger } from "@leancodepl/logger"
+import { JsonLogger } from "@leancodepl/logger"
 import { PdfRenderer } from ".."
 import { BrowserPool } from "./browserPool.service"
 import { FontLibrary, FontsConfiguration, FontsConfigurationToken } from "./fontLibrary.service"
@@ -10,7 +10,7 @@ import { ReactRenderer } from "./reactRenderer.service"
 export type PdfRendererConfiguration = {
   isGlobal?: boolean
   fontsConfiguration: FontsConfiguration
-  logger?: ReturnType<typeof createJsonLogger>
+  logger?: JsonLogger
 }
 
 @Module({})
