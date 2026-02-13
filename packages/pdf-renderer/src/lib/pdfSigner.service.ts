@@ -15,6 +15,7 @@ import {
   PDFDict,
   PDFDocument,
   PDFFont,
+  PDFImage,
   PDFName,
   PDFOperator,
   PDFPage,
@@ -48,6 +49,25 @@ const defaultSignatureMaxLength = 8192
 const defaultSignatureWidth = 200
 const defaultSignatureHeight = 50
 const defaultSignatureMargin = 50
+
+/**
+ * Props passed to a custom signature appearance React component.
+ * These are derived from the signing options at signing time.
+ */
+export type SignatureAppearanceProps = {
+  /** Name of the signer */
+  name: string
+  /** ISO 8601 date string of when the document was signed */
+  date: string
+  /** Reason for signing */
+  reason?: string
+  /** Location where the document was signed */
+  location?: string
+  /** Contact information of the signer */
+  contactInfo?: string
+  /** Label text (e.g. "Digitally signed by") */
+  signatureLabel?: string
+}
 
 export type SignPdfOptions = {
   /** P12/PFX certificate bundle as a Buffer */
@@ -87,6 +107,12 @@ export type SignPdfOptions = {
    * @default "Digitally signed by"
    */
   signatureLabel?: string
+  /**
+   * Pre-rendered PNG image buffer for a custom signature appearance.
+   * When provided, this image is embedded in the signature widget instead of
+   * the default operator-based text appearance.
+   */
+  signatureImage?: Buffer
 }
 
 const signpdf = new SignPdf()
@@ -112,7 +138,15 @@ export class PdfSigner {
     pdfBuffer: Buffer,
     options?: Pick<
       SignPdfOptions,
-      "contactInfo" | "location" | "name" | "pades" | "reason" | "signatureLabel" | "signatureMaxLength" | "widgetRect"
+      | "contactInfo"
+      | "location"
+      | "name"
+      | "pades"
+      | "reason"
+      | "signatureImage"
+      | "signatureLabel"
+      | "signatureMaxLength"
+      | "widgetRect"
     >,
   ): Promise<Buffer> {
     const signatureMaxLength = options?.signatureMaxLength ?? defaultSignatureMaxLength
@@ -131,13 +165,46 @@ export class PdfSigner {
 
     this.logger.debug("Added blank signature page at the end of the document")
 
-    // Calculate widget rectangle — default to top of the new signature page, stretched across the full width
-    const widgetRect: [number, number, number, number] = options?.widgetRect ?? [
-      defaultSignatureMargin,
-      pageHeight - defaultSignatureHeight - defaultSignatureMargin,
-      pageWidth - defaultSignatureMargin,
-      pageHeight - defaultSignatureMargin,
-    ]
+    // Pre-embed the signature image (if provided) so we can read its pixel
+    // dimensions and use them to size the widget rectangle.
+    let embeddedSignatureImage: PDFImage | undefined
+
+    if (options?.signatureImage) {
+      embeddedSignatureImage = await pdfDoc.embedPng(options.signatureImage)
+      // Force the image data into the context immediately so the ref is
+      // resolvable before save() – avoids "Expected a dict object" in Adobe.
+      await embeddedSignatureImage.embed()
+
+      this.logger.debug(
+        `Embedded custom signature image (${embeddedSignatureImage.width}×${embeddedSignatureImage.height} px)`,
+      )
+    }
+
+    // Calculate widget rectangle
+    let widgetRect: [number, number, number, number]
+
+    if (options?.widgetRect) {
+      // Explicit rect provided by the caller — use as-is
+      widgetRect = options.widgetRect
+    } else if (embeddedSignatureImage) {
+      // Use the image's pixel dimensions directly as PDF points (1 px = 1 pt).
+      // The screenshot is already clipped to the component bounds so the
+      // widget matches the rendered element size exactly.
+      widgetRect = [
+        defaultSignatureMargin,
+        pageHeight - embeddedSignatureImage.height - defaultSignatureMargin,
+        defaultSignatureMargin + embeddedSignatureImage.width,
+        pageHeight - defaultSignatureMargin,
+      ]
+    } else {
+      // Default text-based appearance rect
+      widgetRect = [
+        defaultSignatureMargin,
+        pageHeight - defaultSignatureHeight - defaultSignatureMargin,
+        pageWidth - defaultSignatureMargin,
+        pageHeight - defaultSignatureMargin,
+      ]
+    }
 
     this.logger.debug(`Adding signature placeholder to the signature page (page ${existingPages.length + 1})`)
 
@@ -157,13 +224,28 @@ export class PdfSigner {
     const sigHeight = widgetRect[3] - widgetRect[1]
 
     if (sigWidth > 0 && sigHeight > 0) {
-      await this.addSignatureAppearance(pdfDoc, signaturePage, {
-        name: options?.name || "John Doe",
-        reason: options?.reason,
-        width: sigWidth,
-        height: sigHeight,
-        signatureLabel: options?.signatureLabel,
-      })
+      if (embeddedSignatureImage) {
+        // Draw the image directly on the page as content rather than replacing
+        // the annotation's appearance stream. The placeholder creates its own
+        // empty form XObject with `Resources: {}` — a workaround required by
+        // Adobe Acrobat. Replacing that /N entry with a custom stream causes
+        // "Expected a dict object" errors during signature verification.
+        // Drawing on the page avoids this entirely while keeping the image visible.
+        signaturePage.drawImage(embeddedSignatureImage, {
+          x: widgetRect[0],
+          y: widgetRect[1],
+          width: sigWidth,
+          height: sigHeight,
+        })
+      } else {
+        await this.addSignatureAppearance(pdfDoc, signaturePage, {
+          name: options?.name || "John Doe",
+          reason: options?.reason,
+          width: sigWidth,
+          height: sigHeight,
+          signatureLabel: options?.signatureLabel,
+        })
+      }
     }
 
     const pdfWithPlaceholderBytes = await pdfDoc.save()
@@ -307,4 +389,5 @@ export class PdfSigner {
 
     this.logger.debug("Visible signature appearance added successfully")
   }
+
 }

@@ -1,7 +1,7 @@
 {
   "name": "@leancodepl/pdf-renderer",
   "description": "PDF Generator using puppeteer and React templates",
-  "version": "0.6.0",
+  "version": "0.23.0-local",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leancodepl/pdf-generator.git"
