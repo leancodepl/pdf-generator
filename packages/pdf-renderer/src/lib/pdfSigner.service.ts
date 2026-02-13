@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common"
 import { pdflibAddPlaceholder } from "@signpdf/placeholder-pdf-lib"
 import { P12Signer } from "@signpdf/signer-p12"
 import { SignPdf } from "@signpdf/signpdf"
+import { SUBFILTER_ETSI_CADES_DETACHED } from "@signpdf/utils"
 import {
   beginText,
   endText,
@@ -58,6 +59,14 @@ export type SignPdfOptions = {
    * Set to [0, 0, 0, 0] to make the signature invisible.
    */
   widgetRect?: [number, number, number, number]
+  /**
+   * When true, uses the `ETSI.CAdES.detached` SubFilter for PAdES
+   * (PDF Advanced Electronic Signatures) instead of the default
+   * `adbe.pkcs7.detached`.
+   *
+   * @default false
+   */
+  pades?: boolean
 }
 
 const signpdf = new SignPdf()
@@ -81,7 +90,7 @@ export class PdfSigner {
     pdfBuffer: Buffer,
     options?: Pick<
       SignPdfOptions,
-      "contactInfo" | "location" | "name" | "reason" | "signatureMaxLength" | "widgetRect"
+      "contactInfo" | "location" | "name" | "pades" | "reason" | "signatureMaxLength" | "widgetRect"
     >,
   ): Promise<Buffer> {
     const signatureMaxLength = options?.signatureMaxLength ?? defaultSignatureMaxLength
@@ -111,6 +120,7 @@ export class PdfSigner {
       location: options?.location ?? "",
       signatureLength: signatureMaxLength,
       widgetRect,
+      ...(options?.pades ? { subFilter: SUBFILTER_ETSI_CADES_DETACHED } : {}),
     })
 
     // Add visible signature appearance if the widget has a non-zero area
@@ -174,7 +184,7 @@ export class PdfSigner {
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
 
-    const dateStr = new Date().toISOString().split("T")[0]
+    const dateTime = new Date().toISOString()
 
     // Build the appearance stream operators
     const operators: PDFOperator[] = [
@@ -212,7 +222,7 @@ export class PdfSigner {
       setFillingRgbColor(0.3, 0.3, 0.3),
       setFontAndSize(font.name, 7),
       moveText(5, height - 37),
-      showText(font.encodeText(`Date: ${dateStr}`)),
+      showText(font.encodeText(dateTime)),
       endText(),
     ]
 
@@ -223,7 +233,7 @@ export class PdfSigner {
         setFillingRgbColor(0.3, 0.3, 0.3),
         setFontAndSize(font.name, 7),
         moveText(5, height - 47),
-        showText(font.encodeText(`Reason: ${reason}`)),
+        showText(font.encodeText(reason)),
         endText(),
       )
     }
