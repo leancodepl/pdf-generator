@@ -38,7 +38,6 @@ const robotoBoldBytes = readFileSync(join(fontsDir, "Roboto-Bold.ttf"))
 
 const defaultSignatureMaxLength = 8192
 
-/** Default visible signature dimensions in PDF points */
 const defaultSignatureHeight = 50
 const defaultSignatureMargin = 50
 
@@ -57,8 +56,6 @@ export type SignatureAppearanceProps = {
   location?: string
   /** Contact information of the signer */
   contactInfo?: string
-  /** Label text (e.g. "Digitally signed by") */
-  signatureLabel?: string
 }
 
 export type SignPdfOptions = {
@@ -112,132 +109,6 @@ const signpdf = new SignPdf()
 @Injectable()
 export class PdfSigner {
   /**
-   * Adds a signature placeholder to a new blank page appended at the end of
-   * the PDF using pdf-lib. The extra page ensures the signature never covers
-   * existing document content.
-   *
-   * By default, renders a visible signature widget at the top of the new page,
-   * stretched across the full width, showing the signer's name and date.
-   * Pass `widgetRect: [0, 0, 0, 0]` to create an invisible signature.
-   *
-   * @param pdfBuffer - The PDF as a Buffer
-   * @param options - Options for the placeholder (reason, contactInfo, name, location, signatureLength, widgetRect)
-   * @returns The PDF with the signature placeholder as a Buffer
-   */
-  async addPlaceholder(
-    pdfBuffer: Buffer,
-    options?: Pick<
-      SignPdfOptions,
-      | "contactInfo"
-      | "location"
-      | "name"
-      | "pades"
-      | "reason"
-      | "signatureImage"
-      | "signatureLabel"
-      | "signatureMaxLength"
-      | "widgetRect"
-    >,
-  ): Promise<Buffer> {
-    const signatureMaxLength = options?.signatureMaxLength ?? defaultSignatureMaxLength
-
-    const pdfDoc = await PDFDocument.load(pdfBuffer)
-
-    // Use the last existing page's dimensions for the new signature page
-    const existingPages = pdfDoc.getPages()
-    const lastExistingPage = existingPages[existingPages.length - 1]
-    const { width: pageWidth, height: pageHeight } = lastExistingPage.getSize()
-
-    // Append a blank page so the signature never overlaps existing content
-    const signaturePage = pdfDoc.addPage([pageWidth, pageHeight])
-
-    // Pre-embed the signature image (if provided) so we can read its pixel
-    // dimensions and use them to size the widget rectangle.
-    let embeddedSignatureImage: PDFImage | undefined
-
-    if (options?.signatureImage) {
-      embeddedSignatureImage = await pdfDoc.embedPng(options.signatureImage)
-      // Force the image data into the context immediately so the ref is
-      // resolvable before save() – avoids "Expected a dict object" in Adobe.
-      await embeddedSignatureImage.embed()
-    }
-
-    // Calculate widget rectangle
-    let widgetRect: [number, number, number, number]
-
-    if (options?.widgetRect) {
-      // Explicit rect provided by the caller — use as-is
-      widgetRect = options.widgetRect
-    } else if (embeddedSignatureImage) {
-      // The screenshot is taken at a high device scale factor for crisp output.
-      // Divide the pixel dimensions by that factor to recover the original CSS
-      // size so the widget matches the rendered component's visual size.
-      const dpr = PdfGenerator.SIGNATURE_DEVICE_SCALE_FACTOR
-      const cssWidth = embeddedSignatureImage.width / dpr
-      const cssHeight = embeddedSignatureImage.height / dpr
-
-      widgetRect = [
-        defaultSignatureMargin,
-        pageHeight - cssHeight - defaultSignatureMargin,
-        defaultSignatureMargin + cssWidth,
-        pageHeight - defaultSignatureMargin,
-      ]
-    } else {
-      // Default text-based appearance rect
-      widgetRect = [
-        defaultSignatureMargin,
-        pageHeight - defaultSignatureHeight - defaultSignatureMargin,
-        pageWidth - defaultSignatureMargin,
-        pageHeight - defaultSignatureMargin,
-      ]
-    }
-
-    pdflibAddPlaceholder({
-      pdfPage: signaturePage,
-      reason: options?.reason ?? "",
-      contactInfo: options?.contactInfo ?? "",
-      name: options?.name ?? "",
-      location: options?.location ?? "",
-      signatureLength: signatureMaxLength,
-      widgetRect,
-      ...(options?.pades ? { subFilter: SUBFILTER_ETSI_CADES_DETACHED } : {}),
-    })
-
-    // Add visible signature appearance if the widget has a non-zero area
-    const sigWidth = widgetRect[2] - widgetRect[0]
-    const sigHeight = widgetRect[3] - widgetRect[1]
-
-    if (sigWidth > 0 && sigHeight > 0) {
-      if (embeddedSignatureImage) {
-        // Draw the image directly on the page as content rather than replacing
-        // the annotation's appearance stream. The placeholder creates its own
-        // empty form XObject with `Resources: {}` — a workaround required by
-        // Adobe Acrobat. Replacing that /N entry with a custom stream causes
-        // "Expected a dict object" errors during signature verification.
-        // Drawing on the page avoids this entirely while keeping the image visible.
-        signaturePage.drawImage(embeddedSignatureImage, {
-          x: widgetRect[0],
-          y: widgetRect[1],
-          width: sigWidth,
-          height: sigHeight,
-        })
-      } else {
-        await this.addSignatureAppearance(pdfDoc, signaturePage, {
-          name: options?.name || "John Doe",
-          reason: options?.reason,
-          width: sigWidth,
-          height: sigHeight,
-          signatureLabel: options?.signatureLabel,
-        })
-      }
-    }
-
-    const pdfWithPlaceholderBytes = await pdfDoc.save()
-
-    return Buffer.from(pdfWithPlaceholderBytes)
-  }
-
-  /**
    * Digitally signs a PDF buffer using a P12/PFX certificate bundle.
    *
    * Uses pdf-lib with @signpdf/placeholder-pdf-lib to add the signature placeholder
@@ -260,6 +131,111 @@ export class PdfSigner {
   }
 
   /**
+   * Adds a signature placeholder to a new blank page appended at the end of
+   * the PDF using pdf-lib. The extra page ensures the signature never covers
+   * existing document content.
+   *
+   * By default, renders a visible signature widget at the top of the new page,
+   * stretched across the full width, showing the signer's name and date.
+   * Pass `widgetRect: [0, 0, 0, 0]` to create an invisible signature.
+   *
+   * @param pdfBuffer - The PDF as a Buffer
+   * @param options - Options for the placeholder (reason, contactInfo, name, location, signatureLength, widgetRect)
+   * @returns The PDF with the signature placeholder as a Buffer
+   */
+  private async addPlaceholder(
+    pdfBuffer: Buffer,
+    options?: Pick<
+      SignPdfOptions,
+      | "contactInfo"
+      | "location"
+      | "name"
+      | "pades"
+      | "reason"
+      | "signatureImage"
+      | "signatureLabel"
+      | "signatureMaxLength"
+      | "widgetRect"
+    >,
+  ): Promise<Buffer> {
+    const signatureMaxLength = options?.signatureMaxLength ?? defaultSignatureMaxLength
+
+    const pdfDoc = await PDFDocument.load(pdfBuffer)
+
+    const { width: pageWidth = 200, height: pageHeight = 300 } = pdfDoc.getPages().at(-1)?.getSize() ?? {}
+
+    const signaturePage = pdfDoc.addPage([pageWidth, pageHeight])
+
+    let embeddedSignatureImage: PDFImage | undefined
+
+    if (options?.signatureImage) {
+      embeddedSignatureImage = await pdfDoc.embedPng(options.signatureImage)
+      await embeddedSignatureImage.embed()
+    }
+
+    let widgetRect: [number, number, number, number]
+
+    if (options?.widgetRect) {
+      widgetRect = options.widgetRect
+    } else if (embeddedSignatureImage) {
+      const dpr = PdfGenerator.SIGNATURE_DEVICE_SCALE_FACTOR
+      const cssWidth = embeddedSignatureImage.width / dpr
+      const cssHeight = embeddedSignatureImage.height / dpr
+
+      widgetRect = [
+        defaultSignatureMargin,
+        pageHeight - cssHeight - defaultSignatureMargin,
+        defaultSignatureMargin + cssWidth,
+        pageHeight - defaultSignatureMargin,
+      ]
+    } else {
+      widgetRect = [
+        defaultSignatureMargin,
+        pageHeight - defaultSignatureHeight - defaultSignatureMargin,
+        pageWidth - defaultSignatureMargin,
+        pageHeight - defaultSignatureMargin,
+      ]
+    }
+
+    pdflibAddPlaceholder({
+      pdfPage: signaturePage,
+      reason: options?.reason ?? "",
+      contactInfo: options?.contactInfo ?? "",
+      name: options?.name ?? "",
+      location: options?.location ?? "",
+      signatureLength: signatureMaxLength,
+      widgetRect,
+      ...(options?.pades ? { subFilter: SUBFILTER_ETSI_CADES_DETACHED } : {}),
+    })
+
+    const sigWidth = widgetRect[2] - widgetRect[0]
+    const sigHeight = widgetRect[3] - widgetRect[1]
+
+    if (sigWidth > 0 && sigHeight > 0) {
+      if (embeddedSignatureImage) {
+        signaturePage.drawImage(embeddedSignatureImage, {
+          x: widgetRect[0],
+          y: widgetRect[1],
+          width: sigWidth,
+          height: sigHeight,
+        })
+      } else {
+        await this.addSignatureAppearance(pdfDoc, signaturePage, {
+          name: options?.name ?? "",
+          reason: options?.reason,
+          width: sigWidth,
+          height: sigHeight,
+          signatureLabel: options?.signatureLabel,
+        })
+      }
+    }
+
+    const pdfWithPlaceholderBytes = await pdfDoc.save()
+
+    return Buffer.from(pdfWithPlaceholderBytes)
+  }
+
+  /**
    * Replaces the empty appearance stream of the signature widget annotation
    * with one that renders the signer's name and date.
    */
@@ -276,8 +252,6 @@ export class PdfSigner {
   ): Promise<void> {
     const { name, reason, width, height, signatureLabel } = opts
 
-    // Register fontkit so pdf-lib can embed TTF fonts with full Unicode
-    // support (including Polish diacritics like ą, ę, ś, ź, ż, ć, ń, ó, ł).
     pdfDoc.registerFontkit(fontkit)
     const font: PDFFont = await pdfDoc.embedFont(robotoRegularBytes, { subset: true })
     const fontBold: PDFFont = await pdfDoc.embedFont(robotoBoldBytes, { subset: true })

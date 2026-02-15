@@ -1,7 +1,6 @@
 # pdf-renderer
 
-pdf-renderer is a NestJS module used for creating PDF files out of react components. It also supports digitally signing
-PDFs using P12/PFX certificates.
+pdf-renderer is a NestJS module used for creating PDF files out of react components.
 
 ## Installation
 
@@ -78,8 +77,6 @@ PdfRenderer.generatePdf(element: ReactElement, fonts?: (symbol | string)[]): {
     asHtml: () => string;
     asBuffer: () => Promise<Buffer>;
     asStream: () => Promise<Readable>;
-    asSignedBuffer: (signOptions: SignPdfOptions) => Promise<Buffer>;
-    asSignedStream: (signOptions: SignPdfOptions) => Promise<Readable>;
 }
 ```
 
@@ -120,64 +117,42 @@ const StyledDiv = styled.div`
 
 ### PDF Signing
 
-The module supports digitally signing PDF documents using P12/PFX certificates. Signing is available both as part of the
-`generatePdf` pipeline and as a standalone `PdfSigner` service.
+The module supports digitally signing PDF documents using P12/PFX certificates. The `PdfSigner` service is exported from
+the module and can be used standalone, or you can use the convenient `asSignedBuffer` / `asSignedStream` methods returned
+by `generatePdf`.
 
 #### Signing via `generatePdf`
 
-The `generatePdf` method returns two additional functions for producing signed PDFs:
-
-- `asSignedBuffer(signOptions)` -- generates and signs the PDF, returning a `Buffer`
-- `asSignedStream(signOptions)` -- generates and signs the PDF, returning a `Readable` stream
+The `generatePdf` method returns `asSignedBuffer` and `asSignedStream` in addition to the unsigned variants. Both accept
+a `SignPdfOptions` object:
 
 ```ts
 import { PdfRenderer, SignPdfOptions } from "@leancodepl/pdf-renderer";
-import * as fs from "fs";
+import { readFileSync } from "fs";
 
-const p12Buffer = fs.readFileSync("path/to/certificate.p12");
+@Controller("pdf-renderer")
+export class AppController {
+    constructor(private readonly pdfRenderer: PdfRenderer) {}
 
-const signOptions: SignPdfOptions = {
-    p12Buffer,
-    passphrase: "certificate-password",
-    reason: "Document approval",
-    name: "John Doe",
-    contactInfo: "john@example.com",
-    location: "Warsaw, Poland",
-};
-
-// As a signed buffer
-const signedPdfBuffer = await pdfRenderer
-    .generatePdf({ element: <MyComponent />, fonts: [OpenSansRegular] })
-    .asSignedBuffer(signOptions);
-
-// As a signed stream
-const signedPdfStream = await pdfRenderer
-    .generatePdf({ element: <MyComponent />, fonts: [OpenSansRegular] })
-    .asSignedStream(signOptions);
-```
-
-#### Standalone `PdfSigner` service
-
-You can also inject `PdfSigner` directly to sign any existing PDF buffer. This is useful when you already have a PDF and
-want to sign it without going through the rendering pipeline.
-
-```ts
-import { PdfSigner, SignPdfOptions } from "@leancodepl/pdf-renderer";
-
-@Controller("pdf-signer")
-export class SignController {
-    constructor(private readonly pdfSigner: PdfSigner) {}
-
-    @Post("sign")
-    async signPdf(@Body() body: { pdf: Buffer }) {
+    @Get("signedPdf")
+    async signedPdf(@Res() res: Response) {
         const signOptions: SignPdfOptions = {
-            p12Buffer: fs.readFileSync("path/to/certificate.p12"),
-            passphrase: "certificate-password",
-            name: "Jane Doe",
-            reason: "Approval",
+            p12Buffer: readFileSync("/path/to/certificate.p12"),
+            passphrase: "cert-password",
+            name: "John Doe",
+            reason: "Document approval",
+            location: "Warsaw, Poland",
+            contactInfo: "john@example.com",
         };
 
-        return this.pdfSigner.sign(body.pdf, signOptions);
+        const stream = await this.pdfRenderer
+            .generatePdf({ element: <SampleComponent />, fonts: [OpenSansRegular] })
+            .asSignedStream(signOptions);
+
+        res.header("Content-Type", "application/pdf");
+        res.header("Content-Disposition", 'attachment; filename="signed.pdf"');
+
+        stream.pipe(res);
     }
 }
 ```
@@ -206,22 +181,97 @@ type SignPdfOptions = {
     signatureMaxLength?: number;
     /**
      * Custom [x1, y1, x2, y2] rectangle for the visible signature widget.
-     * When not provided, the signature is placed at the bottom-right of the last page.
+     * When not provided, the signature is placed at the top of the last page,
+     * stretched across the full width.
      * Set to [0, 0, 0, 0] to make the signature invisible.
      */
     widgetRect?: [number, number, number, number];
+    /**
+     * When true, uses the ETSI.CAdES.detached SubFilter for PAdES
+     * (PDF Advanced Electronic Signatures) instead of the default
+     * adbe.pkcs7.detached.
+     * @default false
+     */
+    pades?: boolean;
+    /**
+     * Label text shown above the signer name in the visible signature widget.
+     * @default "Digitally signed by"
+     */
+    signatureLabel?: string;
+    /**
+     * Pre-rendered PNG image buffer for a custom signature appearance.
+     * When provided, this image is embedded in the signature widget instead of
+     * the default operator-based text appearance.
+     */
+    signatureImage?: Buffer;
 };
 ```
 
-#### Visible signature
+#### Visible signature appearance
 
-By default, signing adds a visible signature widget to the bottom-right corner of the last page. The widget displays the
-signer's name, date, and optionally the reason for signing.
+By default, the signature widget renders a text-based appearance showing the signer's name, date, and reason. You can
+customize this in three ways:
 
-To create an invisible signature (no visual mark on the PDF), pass `widgetRect: [0, 0, 0, 0]` in the sign options.
+1. **Default appearance** - a built-in text layout with the signer name, label, date, and optional reason.
+2. **Custom React component** - pass a `signature` component to `generatePdf`. It receives `SignatureAppearanceProps`
+   and is rendered to a PNG image that replaces the default text appearance.
+3. **Pre-rendered image** - pass a `signatureImage` buffer (PNG) in `SignPdfOptions` to use an arbitrary image.
 
-To place the signature at a custom position, provide a `widgetRect` array of `[x1, y1, x2, y2]` coordinates in PDF
-points.
+##### Custom signature component example
+
+```ts
+import { SignatureAppearanceProps } from "@leancodepl/pdf-renderer";
+
+const CustomSignature: React.FC<SignatureAppearanceProps> = ({ name, date, reason }) => (
+    <div style={{ padding: 10, border: "1px solid gray", fontFamily: "Open Sans" }}>
+        <strong>{name}</strong>
+        <div>{date}</div>
+        {reason && <div>Reason: {reason}</div>}
+    </div>
+);
+
+// Pass it to generatePdf:
+const stream = await pdfRenderer
+    .generatePdf({
+        element: <SampleComponent />,
+        fonts: [OpenSansRegular],
+        signature: CustomSignature,
+        signatureFonts: [OpenSansRegular], // optional, falls back to fonts
+    })
+    .asSignedStream(signOptions);
+```
+
+#### Using `PdfSigner` directly
+
+You can also inject and use the `PdfSigner` service directly for more control:
+
+```ts
+import { PdfSigner, SignPdfOptions } from "@leancodepl/pdf-renderer";
+
+@Injectable()
+export class MyService {
+    constructor(private readonly pdfSigner: PdfSigner) {}
+
+    async signExistingPdf(pdfBuffer: Buffer, options: SignPdfOptions): Promise<Buffer> {
+        return this.pdfSigner.sign(pdfBuffer, options);
+    }
+}
+```
+
+The `sign` method appends a new page with the signature widget and applies the digital signature.
+
+#### Invisible signatures
+
+To create a digitally signed PDF without a visible signature widget, set `widgetRect` to `[0, 0, 0, 0]`:
+
+```ts
+const signedBuffer = await pdfRenderer
+    .generatePdf({ element: <SampleComponent /> })
+    .asSignedBuffer({
+        ...signOptions,
+        widgetRect: [0, 0, 0, 0],
+    });
+```
 
 ### Styles
 

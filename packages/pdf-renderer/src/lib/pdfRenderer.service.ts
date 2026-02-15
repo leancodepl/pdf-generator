@@ -103,12 +103,11 @@ export class PdfRenderer {
     }
 
     const props: SignatureAppearanceProps = {
-      name: signOptions.name || "John Doe",
+      name: signOptions.name ?? "",
       date: new Date().toISOString(),
       reason: signOptions.reason,
       location: signOptions.location,
       contactInfo: signOptions.contactInfo,
-      signatureLabel: signOptions.signatureLabel,
     }
 
     const signatureImage = await this.renderSignatureImage(signature, props, fonts)
