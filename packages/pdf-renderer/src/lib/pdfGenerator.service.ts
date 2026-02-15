@@ -75,11 +75,30 @@ export class PdfGenerator {
   }
 
   /**
+   * Device scale factor used when rendering signature component screenshots.
+   * A value of 2 produces a 2× Retina-quality image so the signature looks
+   * crisp in the PDF. The caller must divide the resulting pixel dimensions
+   * by this factor to get the CSS-size widget rectangle.
+   */
+  static readonly SIGNATURE_DEVICE_SCALE_FACTOR = 2
+
+  /**
    * Takes a screenshot clipped to the bounding box of the first child element
    * inside `<body>`, so that the resulting image matches the actual rendered
    * component size (no extra viewport padding).
+   *
+   * Renders at {@link SIGNATURE_DEVICE_SCALE_FACTOR}× device pixel ratio
+   * to produce a high-DPI image suitable for print-quality PDFs.
    */
   private static generateElementScreenshotTask: TaskFunction<{ html: string }, Buffer> = async ({ page, data }) => {
+    // Set a high device scale factor for crisp output in PDFs.
+    const viewport = page.viewport()
+    await page.setViewport({
+      width: viewport?.width ?? 800,
+      height: viewport?.height ?? 600,
+      deviceScaleFactor: PdfGenerator.SIGNATURE_DEVICE_SCALE_FACTOR,
+    })
+
     await page.setContent(data.html, {
       timeout: 60000,
       waitUntil: ["load", "domcontentloaded"],
