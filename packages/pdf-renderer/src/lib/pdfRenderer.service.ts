@@ -29,18 +29,7 @@ export class PdfRenderer {
     footerElement?: ReactElement
     format?: PaperFormat
     displayHeaderFooter?: boolean
-    /**
-     * Custom React component for the visible signature appearance.
-     * Receives {@link SignatureAppearanceProps} (name, date, reason, location, etc.)
-     * and is rendered to a PNG image that replaces the default operator-based appearance.
-     *
-     * When not provided, the default text-based signature appearance is used.
-     */
     signature?: ComponentType<SignatureAppearanceProps>
-    /**
-     * Font tokens to inject when rendering the custom `signature` component.
-     * Falls back to the main `fonts` array when not specified.
-     */
     signatureFonts?: (string | symbol)[]
   }) {
     const html = this.reactRenderer.generate(element, fonts)
@@ -88,11 +77,6 @@ export class PdfRenderer {
     }
   }
 
-  /**
-   * If a custom signature component is provided, renders it to a PNG image
-   * and returns the sign options with the `signatureImage` buffer attached.
-   * Otherwise returns the original options unchanged.
-   */
   private async enrichSignOptionsWithSignatureImage(
     signOptions: SignPdfOptions,
     signature?: ComponentType<SignatureAppearanceProps>,
@@ -115,11 +99,6 @@ export class PdfRenderer {
     return { ...signOptions, signatureImage }
   }
 
-  /**
-   * Renders a React component to a PNG buffer using Puppeteer.
-   * The screenshot is clipped to the actual rendered element bounds so that
-   * the image dimensions match the component size exactly.
-   */
   private async renderSignatureImage(
     component: ComponentType<SignatureAppearanceProps>,
     props: SignatureAppearanceProps,
