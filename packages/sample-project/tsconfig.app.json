@@ -5,8 +5,9 @@
     "module": "commonjs",
     "types": ["node"],
     "emitDecoratorMetadata": true,
-    "target": "es2021"
+    "target": "es2022",
+    "lib": ["es2022", "dom"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts", "../invoice-template/src/components/SampleComponent/sampleComponent.service.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }
