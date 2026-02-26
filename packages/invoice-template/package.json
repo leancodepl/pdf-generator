@@ -1,7 +1,7 @@
 {
   "name": "@leancodepl/invoice-template",
   "description": "PDF Generator invoice template with basic configuration",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leancodepl/pdf-generator.git"

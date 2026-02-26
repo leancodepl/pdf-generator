@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.7.0](https://github.com/leancodepl/pdf-generator/compare/v0.6.0...v0.7.0) (2026-02-26)
+
+
+### Features
+
+* add pdf signing feature ([5f4fdd8](https://github.com/leancodepl/pdf-generator/commit/5f4fdd8b2393812b4d469dfea8e2e54451aaf5a7))
+* add possibility to define custom sign certificate look by passing the signature react component ([8adbe8e](https://github.com/leancodepl/pdf-generator/commit/8adbe8e859def90aced21c8e3f6fc9f47021470a))
+* add signature on new page and fix font to use polish chars ([5b724e9](https://github.com/leancodepl/pdf-generator/commit/5b724e9f36df6b5f4f661a181764ad0f4a4627fa))
+* support for PAdES ([e8276a9](https://github.com/leancodepl/pdf-generator/commit/e8276a967f345555950aacd7b20ce0aeb6e49932))
+
+
+
 # [0.6.0](https://github.com/leancodepl/pdf-generator/compare/v0.5.0...v0.6.0) (2025-12-10)
 
 

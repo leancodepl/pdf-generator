@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.7.0](https://github.com/leancodepl/pdf-generator/compare/v0.6.0...v0.7.0) (2026-02-26)
+
+
+### Features
+
+* add kratos support in api proxy ([242bb09](https://github.com/leancodepl/pdf-generator/commit/242bb09f0b9a2e77221a9a0fc8c43b22b12749d2))
+
+
+
 # [0.6.0](https://github.com/leancodepl/pdf-generator/compare/v0.5.0...v0.6.0) (2025-12-10)
 
 
