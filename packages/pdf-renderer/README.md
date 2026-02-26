@@ -84,7 +84,7 @@ PdfRenderer.generatePdf(element: ReactElement, fonts?: (symbol | string)[]): {
 const html = PdfRenderer.generatePdf(React.createElement("div"), []).asHtml();
 ```
 
-#### Renderer consumption example
+#### Renderer usage example
 
 As an example, you can inject the PdfRenderer service into your controller and make the PDF file downloadable.
 
@@ -112,6 +112,7 @@ const SampleComponent: React.FunctionComponent = () => <StyledDiv>sample pdf gen
 
 const StyledDiv = styled.div`
     background: blue;
+    print-color-adjust: exact;
 `;
 ```
 
@@ -276,6 +277,14 @@ const signedBuffer = await pdfRenderer
 ### Styles
 
 For styling your PDF you should use styled components.
+
+
+### Common issues
+
+| Issue | Solution |
+|-------|----------|
+| The background color is not printed correctly | Add `print-color-adjust: exact;` to the styled component |
+
 
 ### Docker
 

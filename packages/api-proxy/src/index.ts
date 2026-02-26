@@ -1,4 +1,5 @@
 export * from "./lib/api-proxy.module"
+export { apiProxyLoggerSymbol as API_PROXY_LOGGER } from "./lib/logger"
 export { CqrsClient } from "./lib/cqrsClient"
 export { Api, EndpointGetter } from "./lib/api.service"
 export { UseJwtGuard } from "./lib/useJwtGuard"
