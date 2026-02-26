@@ -3,6 +3,7 @@ import { PdfRenderer } from ".."
 import { BrowserPool } from "./browserPool.service"
 import { FontLibrary, FontsConfiguration, FontsConfigurationToken } from "./fontLibrary.service"
 import { PdfGenerator } from "./pdfGenerator.service"
+import { PdfSigner } from "./pdfSigner.service"
 import { ReactRenderer } from "./reactRenderer.service"
 
 export type PdfRendererConfiguration = {
@@ -15,7 +16,7 @@ export class PdfRendererModule {
   static register({ isGlobal = true, fontsConfiguration }: PdfRendererConfiguration): DynamicModule {
     return {
       global: isGlobal,
-      exports: [PdfRenderer],
+      exports: [PdfRenderer, PdfSigner],
       module: PdfRendererModule,
       providers: [
         FontLibrary,
@@ -23,6 +24,7 @@ export class PdfRendererModule {
         PdfGenerator,
         ReactRenderer,
         PdfRenderer,
+        PdfSigner,
         {
           provide: FontsConfigurationToken,
           useValue: fontsConfiguration,

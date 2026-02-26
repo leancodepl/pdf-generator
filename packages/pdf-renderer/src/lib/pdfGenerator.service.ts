@@ -74,6 +74,40 @@ export class PdfGenerator {
     return (await page.screenshot(data)) as Buffer
   }
 
+  static readonly SIGNATURE_DEVICE_SCALE_FACTOR = 2
+
+  private static generateElementScreenshotTask: TaskFunction<{ html: string }, Buffer> = async ({ page, data }) => {
+    const viewport = page.viewport()
+    await page.setViewport({
+      width: viewport?.width ?? 800,
+      height: viewport?.height ?? 600,
+      deviceScaleFactor: PdfGenerator.SIGNATURE_DEVICE_SCALE_FACTOR,
+    })
+
+    await page.setContent(data.html, {
+      timeout: 60000,
+      waitUntil: ["load", "domcontentloaded"],
+    })
+
+    const clip = await page.evaluate(() => {
+      const el = document.body.firstElementChild
+      if (!el) return null
+      const rect = el.getBoundingClientRect()
+      return {
+        x: rect.x,
+        y: rect.y,
+        width: Math.ceil(rect.width),
+        height: Math.ceil(rect.height),
+      }
+    })
+
+    return (await page.screenshot({
+      type: "png",
+      omitBackground: true,
+      ...(clip && clip.width > 0 && clip.height > 0 ? { clip } : { fullPage: true }),
+    })) as Buffer
+  }
+
   async generateBuffer(params: GeneratePdfPageParams) {
     return this.browserPool.run(PdfGenerator.generatePdfBufferTask, params)
   }
@@ -84,5 +118,9 @@ export class PdfGenerator {
 
   async generateScreenshot(params: GeneratePageScreenshotParams) {
     return this.browserPool.run(PdfGenerator.generateScreenshotTask, params)
+  }
+
+  async generateElementScreenshot(html: string): Promise<Buffer> {
+    return this.browserPool.run(PdfGenerator.generateElementScreenshotTask, { html })
   }
 }

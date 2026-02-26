@@ -4,8 +4,9 @@
     "module": "commonjs",
     "outDir": "../../dist/out-tsc",
     "declaration": true,
-    "types": ["node"],
-    "target": "es2021"
+    "types": ["node", "node-forge"],
+    "target": "es2022",
+    "lib": ["es2022", "dom"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]

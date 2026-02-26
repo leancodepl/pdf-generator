@@ -24,7 +24,14 @@
         "tsConfig": "packages/pdf-renderer/tsconfig.lib.json",
         "packageJson": "packages/pdf-renderer/package.json",
         "main": "packages/pdf-renderer/src/index.ts",
-        "assets": ["packages/pdf-renderer/*.md"]
+        "assets": [
+          "packages/pdf-renderer/*.md",
+          {
+            "input": "packages/pdf-renderer/src/assets",
+            "glob": "**/*",
+            "output": "./src/assets"
+          }
+        ]
       }
     },
     "publish": {
