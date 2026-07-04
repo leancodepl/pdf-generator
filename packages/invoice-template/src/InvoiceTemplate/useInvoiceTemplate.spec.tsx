@@ -18,7 +18,7 @@ describe("useInvoiceTemplate", () => {
       taxesTableLabels,
     })
 
-    expect(data[data.length - 1]["grossValue"]).toEqual(totalString)
+    expect(data.at(-1)["grossValue"]).toEqual(totalString)
     expect(total).toEqual(totalString)
   })
 
@@ -33,7 +33,7 @@ describe("useInvoiceTemplate", () => {
       taxesTableLabels,
     })
 
-    expect(data[data.length - 1]["taxValue"]).toEqual(taxValueString)
+    expect(data.at(-1)["taxValue"]).toEqual(taxValueString)
   })
 
   it("should calculate correct netValue", () => {
@@ -47,7 +47,7 @@ describe("useInvoiceTemplate", () => {
       taxesTableLabels,
     })
 
-    expect(data[data.length - 1]["netValue"]).toEqual(netValueString)
+    expect(data.at(-1)["netValue"]).toEqual(netValueString)
   })
 })
 
@@ -55,19 +55,19 @@ const invoiceItemsTableData1: InvoiceItemsTableData = [
   {
     name: "name1",
     count: 10,
-    priceEach: 150.0,
+    priceEach: 150,
     taxKey: "vat",
   },
   {
     name: "name2",
     count: 10,
-    priceEach: 200.0,
+    priceEach: 200,
     taxKey: "vat",
   },
   {
     name: "name3",
     count: 5,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat2",
   },
 ]
@@ -81,19 +81,19 @@ const invoiceItemsTableData2: InvoiceItemsTableData = [
   {
     name: "name1",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat",
   },
   {
     name: "name2",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat",
   },
   {
     name: "name3",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat",
   },
 ]
@@ -106,13 +106,13 @@ const invoiceItemsTableData3: InvoiceItemsTableData = [
   {
     name: "name1",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat1",
   },
   {
     name: "name2",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat3",
   },
 ]
