@@ -29,7 +29,7 @@
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "pdf-lib": "^1.17.1",
-    "puppeteer": "^24.32.1",
+    "puppeteer": "^25.3.0",
     "puppeteer-cluster": "^0.25.0",
     "react": ">=19.2.7",
     "react-dom": ">=19.2.7",
