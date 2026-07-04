@@ -5,7 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
-    "@leancodepl/cqrs-client-base": "9.7.2",
+    "@leancodepl/cqrs-client-base": "10.5.2",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
