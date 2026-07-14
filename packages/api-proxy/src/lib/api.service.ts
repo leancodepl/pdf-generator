@@ -1,10 +1,10 @@
+import type { Request } from "express"
 import { HttpService } from "@nestjs/axios"
 import { Injectable } from "@nestjs/common"
 import { firstValueFrom } from "rxjs"
 import { map } from "rxjs/operators"
 import { CommandResult } from "@leancodepl/cqrs-client-base"
 import { CqrsClient } from "./cqrsClient"
-import type { Request } from "express"
 
 export type EndpointGetter = (type: string) => string
 
@@ -34,9 +34,9 @@ export class Api implements CqrsClient {
           headers: { Authorization: token && `Bearer ${token}`, Cookie: cookie },
         })
         .pipe(map(response => response.data)),
-    ).catch(e => {
+    ).catch(error => {
       console.error("Request with url ", url, "and data", data, "failed")
-      return Promise.reject(e)
+      throw error
     })
   }
 }

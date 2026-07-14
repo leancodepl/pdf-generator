@@ -1,8 +1,8 @@
+import type { Response } from "express"
 import { Controller, Get, Post, Res } from "@nestjs/common"
 import { UseKratosGuard } from "@leancodepl/api-proxy"
 import { PdfRenderer } from "@leancodepl/pdf-renderer"
 import { Query1ComponentService } from "./components-services/query1Component.service"
-import type { Response } from "express"
 
 @UseKratosGuard()
 @Controller("kratos")

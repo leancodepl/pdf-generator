@@ -1,8 +1,8 @@
+import type { Request } from "express"
 import { HttpService } from "@nestjs/axios"
 import { Inject, Injectable } from "@nestjs/common"
 import { REQUEST } from "@nestjs/core"
 import { Api, EndpointGetter } from "./api.service"
-import type { Request } from "express"
 
 @Injectable()
 export class CqrsClientFactory {

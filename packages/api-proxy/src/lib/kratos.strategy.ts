@@ -1,8 +1,8 @@
+import type { Request } from "express"
 import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { PassportStrategy } from "@nestjs/passport"
 import { Configuration, FrontendApi } from "@ory/client"
 import { Strategy } from "passport-custom"
-import type { Request } from "express"
 
 export type KratosStrategyConfig = {
   kratosPublicUrl: string
@@ -13,9 +13,9 @@ const bearerPrefix = "Bearer "
 function extractSessionTokenFromHeader(req: Request) {
   const authHeader = req.headers.authorization
   if (authHeader && authHeader.startsWith(bearerPrefix)) {
-    return authHeader.substring(bearerPrefix.length)
+    return authHeader.slice(bearerPrefix.length)
   }
-  return undefined
+  return
 }
 
 function extractCookies(req: Request) {

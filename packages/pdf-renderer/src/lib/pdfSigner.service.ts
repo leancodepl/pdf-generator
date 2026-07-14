@@ -4,8 +4,8 @@ import { pdflibAddPlaceholder } from "@signpdf/placeholder-pdf-lib"
 import { P12Signer } from "@signpdf/signer-p12"
 import { SignPdf } from "@signpdf/signpdf"
 import { SUBFILTER_ETSI_CADES_DETACHED } from "@signpdf/utils"
-import { readFileSync } from "fs"
-import { join } from "path"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import {
   beginText,
   endText,

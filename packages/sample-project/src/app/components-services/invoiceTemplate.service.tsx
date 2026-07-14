@@ -29,13 +29,13 @@ const invoiceItemsTableData: InvoiceItemsTableData = [
   {
     name: "name1",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat1",
   },
   {
     name: "name2",
     count: 10,
-    priceEach: 100.0,
+    priceEach: 100,
     taxKey: "vat3",
   },
 ]

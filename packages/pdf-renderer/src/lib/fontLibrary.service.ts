@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common"
-import * as fs from "fs"
+import * as fs from "node:fs"
 
 export const FontsConfigurationToken = Symbol("FontsConfiguration")
 

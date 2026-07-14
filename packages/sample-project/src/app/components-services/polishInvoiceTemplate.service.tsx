@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import * as fs from "fs"
+import * as fs from "node:fs"
 import path = require("path/posix")
 import styled from "styled-components"
 import {
