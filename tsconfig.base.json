@@ -5,7 +5,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -14,13 +14,12 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "jsx": "react-jsx",
     "paths": {
-      "@leancodepl/api-proxy": ["packages/api-proxy/src/index.ts"],
-      "@leancodepl/invoice-template": ["packages/invoice-template/src/index.ts"],
-      "@leancodepl/pdf-generator-api-and-auth": ["packages/pdf-generator-api-and-auth/src/index.ts"],
-      "@leancodepl/pdf-renderer": ["packages/pdf-renderer/src/index.ts"]
+      "@leancodepl/api-proxy": ["./packages/api-proxy/src/index.ts"],
+      "@leancodepl/invoice-template": ["./packages/invoice-template/src/index.ts"],
+      "@leancodepl/pdf-generator-api-and-auth": ["./packages/pdf-generator-api-and-auth/src/index.ts"],
+      "@leancodepl/pdf-renderer": ["./packages/pdf-renderer/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
