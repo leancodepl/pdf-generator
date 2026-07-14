@@ -40,7 +40,7 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@jscutlery/semver": "6.2.0",
+    "@jscutlery/semver": "7.1.0",
     "@leancodepl/eslint-config": "10.6.0",
     "@leancodepl/prettier-config": "10.6.0",
     "@leancodepl/resolve-eslint-flat-config": "10.6.0",
@@ -80,8 +80,8 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.64.0",
     "verdaccio": "6.7.4",
-    "webpack-dev-server": "^5.2.6",
+    "webpack": "5.108.4",
     "webpack-cli": "^7.2.1",
-    "webpack": "5.108.4"
+    "webpack-dev-server": "^5.2.6"
   }
 }
